@@ -200,3 +200,36 @@ function openPage(id,btn){
  btn.classList.add("active");
  window.scrollTo(0,0);
 }
+
+<style>
+.tap-coin {
+  width: 150px;
+  height: 150px;
+  border-radius: 50%;
+  border: 8px solid #ffdc55;
+  background: linear-gradient(145deg, #fff176, #ff9800);
+  color: #8a4b00;
+  font-size: 65px;
+  font-weight: bold;
+  box-shadow: 0 0 25px #ffbd35;
+  cursor: pointer;
+  transition: transform 0.15s;
+}
+
+.tap-coin:active {
+  transform: scale(1.18);
+}
+
+.tap-label {
+  color: white;
+  font-size: 17px;
+  margin-top: 12px;
+}
+</style>
+
+<div style="text-align:center; margin:25px;">
+  <button class="tap-coin" onclick="tapCoin()">
+    🪙
+  </button>
+  <div class="tap-label">TAP TO EARN +1</div>
+</div>
