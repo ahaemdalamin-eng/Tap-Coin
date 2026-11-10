@@ -7,121 +7,132 @@
 <style>
 *{box-sizing:border-box}
 body{
- margin:0;
- background:#080e1d;
- color:white;
- font-family:Arial,sans-serif;
+ margin:0;background:#080e1d;color:white;
+ font-family:Arial,sans-serif;padding-bottom:85px
 }
 header{
- text-align:center;
- padding:22px;
- font-size:27px;
- font-weight:bold;
- color:#42e8b5;
+ text-align:center;padding:20px;
+ font-size:27px;font-weight:bold;color:#42e8b5
 }
-.container{padding:18px;padding-bottom:35px}
+.container{padding:16px}
 .balance{
  background:linear-gradient(135deg,#155e75,#065f46);
- padding:25px;
- border-radius:22px;
- text-align:center;
+ padding:24px;border-radius:20px;text-align:center
 }
-.balance small{font-size:14px}
-#coins{
- font-size:43px;
- font-weight:bold;
- margin:10px;
-}
+#coins{font-size:40px;font-weight:bold;margin:10px}
 .tap{
- display:block;
- width:190px;
- height:190px;
- margin:35px auto;
- border-radius:50%;
- border:7px solid #42e8b5;
- background:linear-gradient(135deg,#164e63,#087f67);
- color:white;
- font-size:29px;
- font-weight:bold;
- box-shadow:0 0 30px #20d6aa;
- cursor:pointer;
+ display:block;width:175px;height:175px;
+ border-radius:50%;border:7px solid #42e8b5;
+ background:#164e63;color:white;font-size:26px;
+ font-weight:bold;margin:30px auto;
+ box-shadow:0 0 25px #20d6aa
 }
-.tap:active{transform:scale(.94)}
 .card{
- background:#151f33;
- padding:20px;
- border-radius:18px;
- margin-top:16px;
- text-align:center;
+ background:#151f33;padding:20px;
+ border-radius:16px;margin-top:15px;text-align:center
 }
-button.upgrade{
- background:#e5a928;
- color:#111827;
- border:0;
- padding:14px 25px;
- border-radius:12px;
- font-size:17px;
- font-weight:bold;
- margin-top:10px;
+.upgrade{
+ background:#e5a928;color:#111;
+ border:0;padding:13px 25px;
+ border-radius:12px;font-weight:bold
 }
-button:disabled{
- opacity:.5;
+.page{display:none}
+.page.active{display:block}
+nav{
+ position:fixed;bottom:0;left:0;width:100%;
+ background:#111a2b;display:flex;
+ justify-content:space-around;
+ padding:12px 3px;
+ border-top:1px solid #26354b;
 }
-.stats{
- display:flex;
- justify-content:space-between;
- gap:10px;
+nav button{
+ background:none;border:0;color:#aab6c8;
+ font-size:12px;font-weight:bold;
+ display:flex;flex-direction:column;
+ align-items:center;gap:5px
 }
-.stats .card{flex:1}
+nav button span{font-size:22px}
+nav button.active{color:#42e8b5}
 </style>
 </head>
 <body>
 
 <header>🪙 TAP COIN</header>
 
-<div class="container">
-
+<!-- HOME -->
+<div id="home" class="page active container">
  <div class="balance">
-  <small>YOUR TOTAL BALANCE</small>
+  YOUR TOTAL BALANCE
   <div id="coins">0</div>
-  <small>🪙 TOTAL COINS</small>
- </div>
-
- <button class="tap" onclick="tapCoin()">
-  TAP<br>+<span id="power">1</span>
- </button>
-
- <div class="stats">
-  <div class="card">
-   <small>⚡ TAP POWER</small>
-   <h2 id="powerText">+1</h2>
-  </div>
-  <div class="card">
-   <small>🚀 LEVEL</small>
-   <h2 id="level">1</h2>
-  </div>
+  🪙 TOTAL COINS
  </div>
 
  <div class="card">
-  <h2>🚀 COIN UPGRADE</h2>
-  <p>Upgrade করলে প্রতি TAP-এ বেশি Coin পাবে।</p>
-  <h3>Price: <span id="price">100</span> Coins</h3>
+  <h3>⚡ TAP POWER</h3>
+  <h2 id="powerText">+1</h2>
+  <p>LEVEL: <span id="level">1</span></p>
+ </div>
+
+ <div class="card">
+  <h3>🚀 COIN UPGRADE</h3>
+  <p>Price: <span id="price">100</span> Coins</p>
   <button class="upgrade" id="upgradeBtn"
-  onclick="upgradePower()">UPGRADE</button>
+   onclick="upgradePower()">UPGRADE</button>
  </div>
-
- <div class="card">
-  <h3>💾 Your Coins Are Saved</h3>
-  <p>তোমার Coin এই ডিভাইসে সেভ থাকবে।</p>
- </div>
-
 </div>
 
+<!-- EARN -->
+<div id="earn" class="page container">
+ <div class="balance">
+  <h3>YOUR COINS</h3>
+  <div id="earnCoins">0</div>
+ </div>
+ <button class="tap" onclick="tapCoin()">
+  TAP<br>+<span id="tapPower">1</span>
+ </button>
+ <div class="card">
+  <h3>🪙 TAP TO EARN</h3>
+  প্রতি TAP-এ Coin আয় করো!
+ </div>
+</div>
+
+<!-- GAME -->
+<div id="game" class="page container">
+ <div class="card">
+  <h2>🎮 GAME ZONE</h2>
+  <p>Games coming soon!</p>
+ </div>
+</div>
+
+<!-- REWARDS -->
+<div id="rewards" class="page container">
+ <div class="card">
+  <h2>🎁 REWARDS</h2>
+  <p>Daily rewards coming soon!</p>
+ </div>
+</div>
+
+<!-- BOTTOM MENU -->
+<nav>
+ <button class="active" onclick="openPage('home',this)">
+  <span>🏠</span>HOME
+ </button>
+ <button onclick="openPage('earn',this)">
+  <span>🪙</span>EARN
+ </button>
+ <button onclick="openPage('game',this)">
+  <span>🎮</span>GAME
+ </button>
+ <button onclick="openPage('rewards',this)">
+  <span>🎁</span>REWARDS
+ </button>
+</nav>
+
 <script>
-let coins = Number(localStorage.getItem("tapCoins") || 0);
-let power = Number(localStorage.getItem("tapPower") || 1);
-let level = Number(localStorage.getItem("tapLevel") || 1);
-let price = Number(localStorage.getItem("tapPrice") || 100);
+let coins=Number(localStorage.getItem("tapCoins")||0);
+let power=Number(localStorage.getItem("tapPower")||1);
+let level=Number(localStorage.getItem("tapLevel")||1);
+let price=Number(localStorage.getItem("tapPrice")||100);
 
 function save(){
  localStorage.setItem("tapCoins",coins);
@@ -132,8 +143,9 @@ function save(){
 
 function update(){
  document.getElementById("coins").innerText=coins.toLocaleString();
- document.getElementById("power").innerText=power;
+ document.getElementById("earnCoins").innerText=coins.toLocaleString();
  document.getElementById("powerText").innerText="+"+power;
+ document.getElementById("tapPower").innerText=power;
  document.getElementById("level").innerText=level;
  document.getElementById("price").innerText=price;
  document.getElementById("upgradeBtn").disabled=coins<price;
@@ -146,18 +158,33 @@ function tapCoin(){
 }
 
 function upgradePower(){
- if(coins<price)return;
+ if(coins<price){
+  alert("Not enough coins!");
+  return;
+ }
  coins-=price;
  power++;
  level++;
  price*=2;
  save();
  update();
- alert("Upgrade Successful! Now +" + power + " Coin per Tap!");
+ alert("Upgrade successful! +" + power + " per tap");
+}
+
+function openPage(id,btn){
+ document.querySelectorAll(".page").forEach(p=>{
+  p.classList.remove("active");
+ });
+ document.getElementById(id).classList.add("active");
+
+ document.querySelectorAll("nav button").forEach(b=>{
+  b.classList.remove("active");
+ });
+ btn.classList.add("active");
+ window.scrollTo(0,0);
 }
 
 update();
 </script>
-
 </body>
 </html>
