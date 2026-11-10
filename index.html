@@ -274,3 +274,234 @@ historyList.innerHTML=data.history.map(x=>"<p>"+x+"</p>").join("")||"No transact
 </script>
 </body>
 </html>
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TAP COIN</title>
+<style>
+*{box-sizing:border-box}
+body{
+ margin:0;background:#090f1d;color:white;
+ font-family:Arial,sans-serif;padding-bottom:85px
+}
+header{text-align:center;padding:20px;color:#ffd34e}
+header h1{margin:0;font-size:30px}
+.balance{
+ margin:15px;padding:25px;text-align:center;
+ background:linear-gradient(135deg,#263d70,#111b32);
+ border-radius:20px
+}
+.balance h1{font-size:35px;color:#ffcf43}
+.card{
+ background:#17243a;padding:17px;margin:12px;
+ border-radius:16px;text-align:center
+}
+.tap{
+ width:190px;height:190px;border-radius:50%;
+ border:8px solid #ffd44f;
+ background:linear-gradient(145deg,#ffda54,#ed8b19);
+ color:#172033;font-size:30px;font-weight:bold;
+ margin:20px auto;display:block;
+ box-shadow:0 0 30px #ffb82e55
+}
+button{
+ border:0;border-radius:12px;padding:13px 20px;
+ background:#ffc83d;color:#172033;
+ font-weight:bold;cursor:pointer
+}
+nav{
+ position:fixed;bottom:0;left:0;right:0;
+ background:#111d31;display:flex;
+ justify-content:space-around;padding:12px 2px;
+ z-index:5
+}
+nav button{
+ background:transparent;color:white;
+ padding:8px 4px;font-size:11px
+}
+.page{display:none}
+.page.active{display:block}
+.option{
+ display:flex;justify-content:space-between;
+ align-items:center;gap:10px
+}
+.small{color:#aab8ce;font-size:13px}
+</style>
+</head>
+<body>
+
+<header>
+<h1>🪙 TAP COIN</h1>
+<p>Your Coin Adventure</p>
+</header>
+
+<div class="balance">
+<p>YOUR TOTAL BALANCE</p>
+<h1 id="coins">0</h1>
+<p>💰 TOTAL COINS</p>
+</div>
+
+<section id="home" class="page active">
+<div class="card">
+<h3>⚡ TAP POWER</h3>
+<h2 id="power">+1</h2>
+<p>LEVEL: <span id="level">1</span></p>
+<button onclick="tapCoin()">TAP COIN</button>
+<button class="tap" onclick="tapCoin()">🪙 TAP</button>
+<p>Energy: <span id="energy">1000</span>/1000</p>
+</div>
+<div class="card">
+<h3>🚀 COIN UPGRADE</h3>
+<p>Price: <span id="price">100</span> Coins</p>
+<button onclick="upgrade()">UPGRADE</button>
+</div>
+</section>
+
+<section id="earn" class="page">
+<div class="card">
+<h2>🎁 DAILY REWARD</h2>
+<p>Collect your daily bonus</p>
+<button onclick="daily()">CLAIM REWARD</button>
+</div>
+<div class="card">
+<h2>📋 TASK CENTER</h2>
+<p>Complete tasks to earn coins</p>
+<button onclick="task()">CLAIM TASK REWARD</button>
+</div>
+</section>
+
+<section id="mine" class="page">
+<div class="card">
+<h2>⛏️ MINE</h2>
+<p>Upgrade your coin power</p>
+<button onclick="upgrade()">UPGRADE POWER</button>
+</div>
+</section>
+
+<section id="game" class="page">
+<div class="card">
+<h2>🎮 MINI GAME</h2>
+<p>Play and collect bonus coins</p>
+<button onclick="gameReward()">PLAY GAME</button>
+</div>
+</section>
+
+<section id="friends" class="page">
+<div class="card">
+<h2>👥 INVITE FRIENDS</h2>
+<p>Invite your friends to TAP COIN</p>
+<button onclick="share()">INVITE NOW</button>
+</div>
+</section>
+
+<section id="wallet" class="page">
+<div class="card">
+<h2>💳 WALLET</h2>
+<p>Available Coins: <span id="walletCoins">0</span></p>
+<p>Withdrawal system coming soon.</p>
+<p class="small">Real payments require a verified payment system.</p>
+</div>
+</section>
+
+<section id="profile" class="page">
+<div class="card">
+<h2>👤 MY PROFILE</h2>
+<p>TAP COIN PLAYER</p>
+<p>Level: <span id="profileLevel">1</span></p>
+<p>Total Coins: <span id="profileCoins">0</span></p>
+</div>
+</section>
+
+<nav>
+<button onclick="show('home')">🏠<br>HOME</button>
+<button onclick="show('earn')">🎁<br>EARN</button>
+<button onclick="show('mine')">⛏️<br>MINE</button>
+<button onclick="show('game')">🎮<br>GAME</button>
+<button onclick="show('friends')">👥<br>FRIENDS</button>
+<button onclick="show('wallet')">💳<br>WALLET</button>
+<button onclick="show('profile')">👤<br>PROFILE</button>
+</nav>
+
+<script>
+let coins=Number(localStorage.getItem("tc_coins"))||0;
+let power=Number(localStorage.getItem("tc_power"))||1;
+let level=Number(localStorage.getItem("tc_level"))||1;
+let energy=Number(localStorage.getItem("tc_energy"))||1000;
+let price=100;
+
+function save(){
+ localStorage.setItem("tc_coins",coins);
+ localStorage.setItem("tc_power",power);
+ localStorage.setItem("tc_level",level);
+ localStorage.setItem("tc_energy",energy);
+ update();
+}
+function update(){
+ document.getElementById("coins").textContent=coins;
+ document.getElementById("power").textContent="+"+power;
+ document.getElementById("level").textContent=level;
+ document.getElementById("energy").textContent=energy;
+ document.getElementById("price").textContent=price;
+ document.getElementById("walletCoins").textContent=coins;
+ document.getElementById("profileCoins").textContent=coins;
+ document.getElementById("profileLevel").textContent=level;
+}
+function tapCoin(){
+ if(energy<power){alert("Not enough energy!");return}
+ coins+=power;
+ energy-=power;
+ save();
+}
+function upgrade(){
+ if(coins<price){alert("Not enough coins!");return}
+ coins-=price;
+ power++;
+ level++;
+ price=Math.floor(price*1.8);
+ save();
+}
+function daily(){
+ let last=localStorage.getItem("tc_daily");
+ let today=new Date().toDateString();
+ if(last===today){alert("Already claimed today!");return}
+ coins+=500;
+ localStorage.setItem("tc_daily",today);
+ save();
+ alert("500 Coins Added!");
+}
+function task(){
+ if(localStorage.getItem("tc_task")==="yes"){
+ alert("Task already claimed!");return
+ }
+ coins+=100;
+ localStorage.setItem("tc_task","yes");
+ save();
+ alert("100 Coins Added!");
+}
+function gameReward(){
+ coins+=50;
+ save();
+ alert("50 Game Coins Added!");
+}
+function share(){
+ let link=location.href;
+ if(navigator.share){
+ navigator.share({title:"TAP COIN",text:"Join TAP COIN!",url:link});
+ }else{
+ prompt("Copy your app link:",link);
+ }
+}
+function show(id){
+ document.querySelectorAll(".page").forEach(p=>p.classList.remove("active"));
+ document.getElementById(id).classList.add("active");
+}
+setInterval(()=>{
+ if(energy<1000){energy=Math.min(1000,energy+1);save()}
+},3000);
+update();
+</script>
+</body>
+</html>
