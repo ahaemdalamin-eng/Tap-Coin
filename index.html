@@ -103,3 +103,61 @@ document.getElementById("login").onclick=async()=>{
 </script>
 </body>
 </html>
+
+<!-- TAP COIN ADMIN PANEL -->
+<section id="adminPanel" style="
+display:none;background:#101827;color:white;
+padding:20px;border-radius:15px;margin:15px auto;
+max-width:600px;font-family:Arial">
+
+<h2 style="color:#f5c542;text-align:center">
+🛡️ TAP COIN ADMIN
+</h2>
+
+<div style="display:flex;gap:10px;flex-wrap:wrap">
+ <div style="background:#24364d;padding:18px;border-radius:12px;flex:1">
+  <h3>Total Users</h3>
+  <h2 id="totalUsers">0</h2>
+ </div>
+ <div style="background:#24364d;padding:18px;border-radius:12px;flex:1">
+  <h3>Total Demo Coins</h3>
+  <h2 id="totalCoins">0</h2>
+ </div>
+</div>
+
+<h3>User List</h3>
+<div id="adminUsers">Loading...</div>
+
+<button id="adminLogout" style="
+width:100%;padding:13px;margin-top:15px;
+background:#f5c542;border:0;border-radius:8px">
+LOGOUT
+</button>
+</section>
+
+<script type="module">
+// এই প্যানেলটি নিরাপদ Firebase Admin
+// authorization এবং Rules যুক্ত করার পর চালু করতে হবে.
+// Client-side HTML নিজে Admin অনুমতি নির্ধারণ করে না.
+import { getAuth, onAuthStateChanged, signOut }
+from "https://www.gstatic.com/firebasejs/12.6.0/firebase-auth.js";
+
+const auth = getAuth();
+
+const panel = document.getElementById("adminPanel");
+
+onAuthStateChanged(auth, user => {
+  if (!user) {
+    panel.style.display = "none";
+    return;
+  }
+
+  // Admin permission server-side যাচাই না হওয়া পর্যন্ত
+  // Admin panel লুকানো থাকবে।
+  panel.style.display = "none";
+});
+
+document.getElementById("adminLogout").onclick = async () => {
+  await signOut(auth);
+};
+</script>
