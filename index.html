@@ -248,3 +248,58 @@ function openPage(id,btn){
      VISIT TIKTOK
   </a>
 </div>
+
+<div class="withdraw-card">
+  <h2>💰 WITHDRAW</h2>
+
+  <p>YOUR AVAILABLE COINS</p>
+  <h1 id="withdrawBalance">0</h1>
+
+  <input
+    type="number"
+    id="withdrawAmount"
+    placeholder="Enter amount"
+    style="padding:14px;width:90%;border-radius:10px;"
+  >
+
+  <select id="withdrawMethod"
+    style="padding:14px;width:90%;margin-top:12px;">
+    <option value="bKash">bKash</option>
+    <option value="Nagad">Nagad</option>
+  </select>
+
+  <input
+    type="tel"
+    id="withdrawNumber"
+    placeholder="Payment account number"
+    style="padding:14px;width:90%;margin-top:12px;"
+  >
+
+  <button onclick="requestWithdraw()"
+    style="padding:14px;background:#16c784;color:white;
+    border:0;border-radius:10px;margin-top:15px;">
+    WITHDRAW NOW
+  </button>
+
+  <p id="withdrawMessage"></p>
+</div>
+
+<script>
+function requestWithdraw() {
+  const amount = Number(
+    document.getElementById("withdrawAmount").value
+  );
+
+  const method = document.getElementById("withdrawMethod").value;
+  const number = document.getElementById("withdrawNumber").value;
+
+  if (!amount || amount <= 0 || !number) {
+    document.getElementById("withdrawMessage").innerText =
+      "Please enter all information!";
+    return;
+  }
+
+  document.getElementById("withdrawMessage").innerText =
+    "Withdrawal request system is not connected yet.";
+}
+</script>
