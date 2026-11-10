@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="bn">
+<html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -8,107 +8,156 @@
 *{box-sizing:border-box}
 body{
  margin:0;
- background:#0b1020;
+ background:#080e1d;
  color:white;
  font-family:Arial,sans-serif;
 }
 header{
+ text-align:center;
  padding:22px;
- text-align:center;
- font-size:26px;
+ font-size:27px;
  font-weight:bold;
- color:#40e0b0;
+ color:#42e8b5;
 }
-.container{padding:18px}
+.container{padding:18px;padding-bottom:35px}
 .balance{
- background:linear-gradient(135deg,#164e63,#065f46);
- padding:28px;
- border-radius:20px;
+ background:linear-gradient(135deg,#155e75,#065f46);
+ padding:25px;
+ border-radius:22px;
  text-align:center;
 }
-.balance h2{font-size:18px}
-#coins{font-size:38px;font-weight:bold}
-.tap{
- width:170px;height:170px;
- border-radius:50%;
- border:7px solid #40e0b0;
- background:#123b43;
- color:white;
- font-size:25px;
+.balance small{font-size:14px}
+#coins{
+ font-size:43px;
  font-weight:bold;
- margin:35px auto;
+ margin:10px;
+}
+.tap{
  display:block;
- box-shadow:0 0 25px #20d6aa;
+ width:190px;
+ height:190px;
+ margin:35px auto;
+ border-radius:50%;
+ border:7px solid #42e8b5;
+ background:linear-gradient(135deg,#164e63,#087f67);
+ color:white;
+ font-size:29px;
+ font-weight:bold;
+ box-shadow:0 0 30px #20d6aa;
+ cursor:pointer;
 }
 .tap:active{transform:scale(.94)}
-.info{
- background:#171f33;
- padding:18px;
- border-radius:15px;
- margin-top:15px;
+.card{
+ background:#151f33;
+ padding:20px;
+ border-radius:18px;
+ margin-top:16px;
  text-align:center;
 }
-nav{
- display:flex;
- justify-content:space-around;
- padding:18px;
- background:#151d30;
- position:fixed;
- bottom:0;width:100%;
+button.upgrade{
+ background:#e5a928;
+ color:#111827;
+ border:0;
+ padding:14px 25px;
+ border-radius:12px;
+ font-size:17px;
+ font-weight:bold;
+ margin-top:10px;
 }
-nav span{color:#40e0b0}
+button:disabled{
+ opacity:.5;
+}
+.stats{
+ display:flex;
+ justify-content:space-between;
+ gap:10px;
+}
+.stats .card{flex:1}
 </style>
 </head>
 <body>
+
 <header>🪙 TAP COIN</header>
+
 <div class="container">
+
  <div class="balance">
-  <h2>YOUR BALANCE</h2>
+  <small>YOUR TOTAL BALANCE</small>
   <div id="coins">0</div>
-  <p>Available Coins</p>
+  <small>🪙 TOTAL COINS</small>
  </div>
 
  <button class="tap" onclick="tapCoin()">
-  TAP<br>TO EARN
+  TAP<br>+<span id="power">1</span>
  </button>
 
- <div class="info">
-  <h3>⚡ Energy</h3>
-  <p id="energy">100 / 100</p>
+ <div class="stats">
+  <div class="card">
+   <small>⚡ TAP POWER</small>
+   <h2 id="powerText">+1</h2>
+  </div>
+  <div class="card">
+   <small>🚀 LEVEL</small>
+   <h2 id="level">1</h2>
+  </div>
  </div>
 
- <div class="info">
-  <h3>🎁 Daily Bonus</h3>
-  <p>Coming Soon</p>
+ <div class="card">
+  <h2>🚀 COIN UPGRADE</h2>
+  <p>Upgrade করলে প্রতি TAP-এ বেশি Coin পাবে।</p>
+  <h3>Price: <span id="price">100</span> Coins</h3>
+  <button class="upgrade" id="upgradeBtn"
+  onclick="upgradePower()">UPGRADE</button>
  </div>
+
+ <div class="card">
+  <h3>💾 Your Coins Are Saved</h3>
+  <p>তোমার Coin এই ডিভাইসে সেভ থাকবে।</p>
+ </div>
+
 </div>
 
-<nav>
- <span>🏠 Home</span>
- <span>🪙 Earn</span>
- <span>👤 Profile</span>
-</nav>
-
 <script>
-let coins=Number(localStorage.getItem("coins")||0);
-let energy=100;
+let coins = Number(localStorage.getItem("tapCoins") || 0);
+let power = Number(localStorage.getItem("tapPower") || 1);
+let level = Number(localStorage.getItem("tapLevel") || 1);
+let price = Number(localStorage.getItem("tapPrice") || 100);
+
+function save(){
+ localStorage.setItem("tapCoins",coins);
+ localStorage.setItem("tapPower",power);
+ localStorage.setItem("tapLevel",level);
+ localStorage.setItem("tapPrice",price);
+}
 
 function update(){
- document.getElementById("coins").innerText=coins;
- document.getElementById("energy").innerText=energy+" / 100";
+ document.getElementById("coins").innerText=coins.toLocaleString();
+ document.getElementById("power").innerText=power;
+ document.getElementById("powerText").innerText="+"+power;
+ document.getElementById("level").innerText=level;
+ document.getElementById("price").innerText=price;
+ document.getElementById("upgradeBtn").disabled=coins<price;
 }
 
 function tapCoin(){
- if(energy<=0){
-  alert("Energy শেষ!");
-  return;
- }
- coins++;
- energy--;
- localStorage.setItem("coins",coins);
+ coins+=power;
+ save();
  update();
 }
+
+function upgradePower(){
+ if(coins<price)return;
+ coins-=price;
+ power++;
+ level++;
+ price*=2;
+ save();
+ update();
+ alert("Upgrade Successful! Now +" + power + " Coin per Tap!");
+}
+
 update();
 </script>
+
 </body>
 </html>
