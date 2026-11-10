@@ -161,3 +161,148 @@ document.getElementById("adminLogout").onclick = async () => {
   await signOut(auth);
 };
 </script>
+
+<div style="background:#172438;color:white;padding:20px;border-radius:15px;font-family:Arial">
+  <h2 style="color:#f5c542;text-align:center">🪙 TAP COIN</h2>
+  <input id="guestName" placeholder="Enter Username" style="width:100%;padding:13px;margin:8px 0;box-sizing:border-box">
+  <button id="guestBtn" style="width:100%;padding:13px;background:#f5c542;border:0;border-radius:8px">CREATE GUEST ACCOUNT</button>
+  <p id="statusMsg">Welcome to TAP COIN</p>
+  <p id="myUid" style="font-size:12px;word-break:break-all"></p>
+  <hr>
+  <div id="adminPanel" style="display:none">
+    <h2 style="color:#f5c542">🛡️ ADMIN DASHBOARD</h2>
+    <h3>Total Users: <span id="totalUsers">0</span></h3>
+    <h3>Total Demo Coins: <span id="totalCoins">0</span></h3>
+    <div id="userList">Loading users...</div>
+  </div>
+</div>
+
+<script type="module">
+import { initializeApp, getApps, getApp }
+from "https://www.gstatic.com/firebasejs/12.6.0/firebase-app.js";
+
+import {
+  getAuth, signInAnonymously, onAuthStateChanged
+} from "https://www.gstatic.com/firebasejs/12.6.0/firebase-auth.js";
+
+import {
+  getFirestore, doc, getDoc, setDoc, serverTimestamp,
+  collection, getDocs, updateDoc
+} from "https://www.gstatic.com/firebasejs/12.6.0/firebase-firestore.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyDtXQI_wAaZQ7ockqXhC7T6K6wvNwdCUUPQ",
+  authDomain: "tap-coin-6d526.firebaseapp.com",
+  projectId: "tap-coin-6d526",
+  storageBucket: "tap-coin-6d526.firebasestorage.app",
+  messagingSenderId: "170772485510",
+  appId: "1:170772485510:web:f95accc6dbe4a6fb95c807",
+  measurementId: "G-DMH1KPBXFD"
+};
+
+// প্রথম Guest Account খোলার পর নিজের UID দিয়ে এটি বদলাবে।
+const ADMIN_UID = "PASTE_YOUR_ADMIN_UID_HERE";
+
+const app = getApps().length ? getApp() : initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getFirestore(app);
+
+const msg = document.getElementById("statusMsg");
+const uidBox = document.getElementById("myUid");
+const panel = document.getElementById("adminPanel");
+
+document.getElementById("guestBtn").onclick = async () => {
+  const name = document.getElementById("guestName").value.trim();
+  if (!name) {
+    msg.textContent = "Please enter a username.";
+    return;
+  }
+
+  try {
+    msg.textContent = "Creating account...";
+    const result = await signInAnonymously(auth);
+    const user = result.user;
+    const ref = doc(db, "users", user.uid);
+    const existing = await getDoc(ref);
+
+    if (!existing.exists()) {
+      await setDoc(ref, {
+        uid: user.uid,
+        displayName: name,
+        coins: 0,
+        status: "active",
+        createdAt: serverTimestamp()
+      });
+    }
+
+    msg.textContent = "Guest account ready!";
+    uidBox.textContent = "Your User ID: " + user.uid;
+    await showAdmin(user.uid);
+  } catch (error) {
+    msg.textContent = "Error: " + error.message;
+  }
+};
+
+onAuthStateChanged(auth, async user => {
+  if (!user) {
+    panel.style.display = "none";
+    return;
+  }
+  uidBox.textContent = "Your User ID: " + user.uid;
+  await showAdmin(user.uid);
+});
+
+async function showAdmin(uid) {
+  if (uid !== ADMIN_UID || ADMIN_UID === "PASTE_YOUR_ADMIN_UID_HERE") {
+    panel.style.display = "none";
+    return;
+  }
+
+  panel.style.display = "block";
+  const list = document.getElementById("userList");
+  list.textContent = "Loading users...";
+
+  try {
+    const snapshot = await getDocs(collection(db, "users"));
+    let totalCoins = 0;
+    list.innerHTML = "";
+
+    snapshot.forEach(item => {
+      const u = item.data();
+      totalCoins += Number(u.coins || 0);
+
+      const row = document.createElement("div");
+      row.style.cssText = "background:#263950;padding:12px;margin:10px 0;border-radius:9px;overflow-wrap:anywhere";
+
+      const info = document.createElement("p");
+      info.textContent = `${u.displayName || "Guest"} | ID: ${u.uid} | Coins: ${u.coins || 0} | ${u.status || "active"}`;
+
+      const add = document.createElement("button");
+      add.textContent = "+100 Demo Coins";
+      add.onclick = async () => {
+        await updateDoc(doc(db, "users", u.uid), {
+          coins: Number(u.coins || 0) + 100
+        });
+        await showAdmin(uid);
+      };
+
+      const block = document.createElement("button");
+      block.textContent = u.status === "blocked" ? "Unblock User" : "Block User";
+      block.onclick = async () => {
+        await updateDoc(doc(db, "users", u.uid), {
+          status: u.status === "blocked" ? "active" : "blocked"
+        });
+        await showAdmin(uid);
+      };
+
+      row.append(info, add, block);
+      list.appendChild(row);
+    });
+
+    document.getElementById("totalUsers").textContent = snapshot.size;
+    document.getElementById("totalCoins").textContent = totalCoins;
+  } catch (error) {
+    list.textContent = "Admin access not configured: " + error.message;
+  }
+}
+</script>
