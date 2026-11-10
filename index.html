@@ -1,308 +1,212 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#101827">
 <title>TAP COIN</title>
 <style>
 *{box-sizing:border-box}
-body{
- margin:0;background:#0c1422;color:white;
- font-family:Arial,sans-serif;
- display:flex;justify-content:center;
- min-height:100vh;align-items:center;padding:20px
+body{margin:0;background:#0c1422;color:white;font-family:Arial;padding-bottom:85px}
+header{padding:20px;text-align:center;color:#f5c542;font-size:27px;font-weight:bold}
+.card{background:#172438;margin:14px;padding:20px;border-radius:17px;text-align:center}
+.balance{font-size:40px;color:#f5c542;font-weight:bold}
+.stats{display:flex;gap:10px}
+.stats .card{flex:1;margin:5px;padding:14px}
+.tap{
+ width:190px;height:190px;border-radius:50%;
+ border:7px solid #f5c542;
+ background:linear-gradient(145deg,#ffe27a,#d99a15);
+ color:#172438;font-size:32px;font-weight:bold;
+ margin:25px auto;display:block;
+ box-shadow:0 0 28px #f5c54255;
 }
-.card{
- width:100%;max-width:380px;background:#172438;
- padding:25px;border-radius:18px;
- box-shadow:0 5px 25px #0008
-}
-h1{text-align:center;color:#f5c542}
-input,button{
- width:100%;padding:14px;margin:9px 0;
- border:0;border-radius:9px;font-size:16px
-}
-input{background:#263950;color:white}
-button{background:#f5c542;font-weight:bold}
-#message{text-align:center;color:#f5c542}
+.tap:active{transform:scale(.92)}
+button.action{width:100%;padding:14px;background:#f5c542;border:0;border-radius:9px;font-weight:bold;margin-top:10px}
+nav{position:fixed;bottom:0;left:0;right:0;background:#172438;display:flex;justify-content:space-around;padding:12px 2px}
+nav button{background:none;border:0;color:white;font-size:12px}
+.page{display:none}.page.active{display:block}
 </style>
 </head>
 <body>
-<div class="card">
-<h1>🪙 TAP COIN</h1>
-<h3>Login / Registration</h3>
 
-<input id="name" placeholder="Your Name">
-<input id="email" type="email" placeholder="Email">
-<input id="password" type="password" placeholder="Password">
+<header>🪙 TAP COIN</header>
 
-<button id="register">CREATE ACCOUNT</button>
-<button id="login">LOGIN</button>
-<p id="message">Welcome to TAP COIN</p>
+<div id="home" class="page active">
+ <div class="card">
+  <p>YOUR TOTAL BALANCE</p>
+  <div class="balance" id="coins">0</div>
+  <p>TOTAL COINS</p>
+  <button class="tap" onclick="tapCoin()">TAP</button>
+  <div class="stats">
+   <div class="card">
+    <small>TAP POWER</small>
+    <h2 id="power">1</h2>
+   </div>
+   <div class="card">
+    <small>LEVEL</small>
+    <h2 id="level">1</h2>
+   </div>
+  </div>
+  <p>Energy: <span id="energy">1000</span>/1000</p>
+ </div>
+ <div class="card">
+  <h3>⚡ COIN UPGRADE</h3>
+  <p>Price: <span id="price">100</span> Coins</p>
+  <button class="action" onclick="upgrade()">UPGRADE</button>
+ </div>
 </div>
 
-<script type="module">
-import { initializeApp }
-from "https://www.gstatic.com/firebasejs/12.6.0/firebase-app.js";
+<div id="earn" class="page">
+ <div class="card">
+  <h2>🎁 DAILY REWARD</h2>
+  <p>Collect 500 Demo Coins once per day.</p>
+  <button class="action" onclick="daily()">CLAIM REWARD</button>
+ </div>
+ <div class="card">
+  <h2>📋 TASK CENTER</h2>
+  <p>Complete your demo task.</p>
+  <button class="action" onclick="task()">CLAIM 100 COINS</button>
+ </div>
+</div>
 
-import {
- getAuth,createUserWithEmailAndPassword,
- signInWithEmailAndPassword,updateProfile
-} from "https://www.gstatic.com/firebasejs/12.6.0/firebase-auth.js";
+<div id="game" class="page">
+ <div class="card">
+  <h2>🎮 MINI GAME</h2>
+  <p>Play a demo game and earn 50 coins.</p>
+  <button class="action" onclick="game()">PLAY GAME</button>
+ </div>
+</div>
 
-import {
- getFirestore,doc,setDoc,serverTimestamp
-} from "https://www.gstatic.com/firebasejs/12.6.0/firebase-firestore.js";
+<div id="friends" class="page">
+ <div class="card">
+  <h2>👥 FRIENDS</h2>
+  <p>Invite your friends to discover TAP COIN.</p>
+  <button class="action" onclick="shareApp()">SHARE APP</button>
+ </div>
+</div>
 
-const firebaseConfig = {
- apiKey: "AIzaSyDtXQI_wAaZQ7ockqXhC7tK6wvNwdCUUPQ",
- authDomain: "tap-coin-6d526.firebaseapp.com",
- projectId: "tap-coin-6d526",
- storageBucket: "tap-coin-6d526.firebasestorage.app",
- messagingSenderId: "170772485510",
- appId: "1:170772485510:web:f95accc6dbe4a6fb95c807",
- measurementId: "G-DMH1KPBXFD"
-};
+<div id="wallet" class="page">
+ <div class="card">
+  <h2>👛 WALLET</h2>
+  <div class="balance" id="walletCoins">0</div>
+  <p>Demo Coins</p>
+  <p>Withdrawal is not available. Coins have no cash value.</p>
+ </div>
+</div>
 
-const app=initializeApp(firebaseConfig);
-const auth=getAuth(app);
-const db=getFirestore(app);
+<div id="profile" class="page">
+ <div class="card">
+  <h2>👤 PROFILE</h2>
+  <p>TAP COIN Player</p>
+  <p>Account: Local Demo</p>
+  <button class="action" onclick="resetData()">RESET DEMO DATA</button>
+ </div>
+</div>
 
-const message=document.getElementById("message");
+<nav>
+ <button onclick="showPage('home')">🏠<br>HOME</button>
+ <button onclick="showPage('earn')">🎁<br>EARN</button>
+ <button onclick="showPage('game')">🎮<br>GAME</button>
+ <button onclick="showPage('friends')">👥<br>FRIENDS</button>
+ <button onclick="showPage('wallet')">👛<br>WALLET</button>
+ <button onclick="showPage('profile')">👤<br>PROFILE</button>
+</nav>
 
-document.getElementById("register").onclick=async()=>{
- const name=document.getElementById("name").value.trim();
- const email=document.getElementById("email").value.trim();
- const password=document.getElementById("password").value;
+<script>
+const defaults={coins:0,power:1,level:1,energy:1000,price:100};
+let data;
+try{
+ data=JSON.parse(localStorage.getItem("tapcoin_data"))||{...defaults};
+}catch(e){data={...defaults};}
 
- try{
-  if(!name) throw new Error("Enter your name");
-  const result=await createUserWithEmailAndPassword(auth,email,password);
-  await updateProfile(result.user,{displayName:name});
-  await setDoc(doc(db,"users",result.user.uid),{
-   displayName:name,
-   coins:0,
-   createdAt:serverTimestamp()
-  });
-  message.textContent="Account created successfully!";
- }catch(error){
-  message.textContent=error.message;
+function save(){
+ localStorage.setItem("tapcoin_data",JSON.stringify(data));
+ update();
+}
+function update(){
+ document.getElementById("coins").textContent=data.coins;
+ document.getElementById("walletCoins").textContent=data.coins;
+ document.getElementById("power").textContent=data.power;
+ document.getElementById("level").textContent=data.level;
+ document.getElementById("energy").textContent=data.energy;
+ document.getElementById("price").textContent=data.price;
+}
+function tapCoin(){
+ if(data.energy<data.power){alert("Not enough energy!");return;}
+ data.coins+=data.power;
+ data.energy-=data.power;
+ save();
+}
+function upgrade(){
+ if(data.coins<data.price){alert("Not enough coins!");return;}
+ data.coins-=data.price;
+ data.power++;
+ data.level++;
+ data.price=Math.floor(data.price*1.8);
+ save();
+ alert("Upgrade successful!");
+}
+function daily(){
+ const today=new Date().toDateString();
+ if(localStorage.getItem("tap_daily")===today){
+  alert("Today's reward already claimed!");
+  return;
  }
-};
-
-document.getElementById("login").onclick=async()=>{
- const email=document.getElementById("email").value.trim();
- const password=document.getElementById("password").value;
- try{
-  await signInWithEmailAndPassword(auth,email,password);
-  message.textContent="Login successful!";
- }catch(error){
-  message.textContent=error.message;
+ data.coins+=500;
+ localStorage.setItem("tap_daily",today);
+ save();
+ alert("500 Demo Coins added!");
+}
+function task(){
+ if(localStorage.getItem("tap_task")==="yes"){
+  alert("Task already completed!");
+  return;
  }
-};
+ data.coins+=100;
+ localStorage.setItem("tap_task","yes");
+ save();
+ alert("100 Demo Coins added!");
+}
+function game(){
+ const today=new Date().toDateString();
+ if(localStorage.getItem("tap_game")===today){
+  alert("Come back tomorrow!");
+  return;
+ }
+ data.coins+=50;
+ localStorage.setItem("tap_game",today);
+ save();
+ alert("You earned 50 Demo Coins!");
+}
+function showPage(id){
+ document.querySelectorAll(".page").forEach(p=>p.classList.remove("active"));
+ document.getElementById(id).classList.add("active");
+}
+function shareApp(){
+ if(navigator.share){
+  navigator.share({title:"TAP COIN",text:"Try TAP COIN!",url:location.href});
+ }else{
+  navigator.clipboard.writeText(location.href);
+  alert("App link copied!");
+ }
+}
+function resetData(){
+ if(confirm("Reset all demo coins and progress?")){
+  localStorage.clear();
+  data={...defaults};
+  save();
+  alert("Demo data reset!");
+ }
+}
+setInterval(()=>{
+ if(data.energy<1000){
+  data.energy=Math.min(1000,data.energy+1);
+  save();
+ }
+},3000);
+update();
 </script>
 </body>
 </html>
-
-<!-- TAP COIN ADMIN PANEL -->
-<section id="adminPanel" style="
-display:none;background:#101827;color:white;
-padding:20px;border-radius:15px;margin:15px auto;
-max-width:600px;font-family:Arial">
-
-<h2 style="color:#f5c542;text-align:center">
-🛡️ TAP COIN ADMIN
-</h2>
-
-<div style="display:flex;gap:10px;flex-wrap:wrap">
- <div style="background:#24364d;padding:18px;border-radius:12px;flex:1">
-  <h3>Total Users</h3>
-  <h2 id="totalUsers">0</h2>
- </div>
- <div style="background:#24364d;padding:18px;border-radius:12px;flex:1">
-  <h3>Total Demo Coins</h3>
-  <h2 id="totalCoins">0</h2>
- </div>
-</div>
-
-<h3>User List</h3>
-<div id="adminUsers">Loading...</div>
-
-<button id="adminLogout" style="
-width:100%;padding:13px;margin-top:15px;
-background:#f5c542;border:0;border-radius:8px">
-LOGOUT
-</button>
-</section>
-
-<script type="module">
-// এই প্যানেলটি নিরাপদ Firebase Admin
-// authorization এবং Rules যুক্ত করার পর চালু করতে হবে.
-// Client-side HTML নিজে Admin অনুমতি নির্ধারণ করে না.
-import { getAuth, onAuthStateChanged, signOut }
-from "https://www.gstatic.com/firebasejs/12.6.0/firebase-auth.js";
-
-const auth = getAuth();
-
-const panel = document.getElementById("adminPanel");
-
-onAuthStateChanged(auth, user => {
-  if (!user) {
-    panel.style.display = "none";
-    return;
-  }
-
-  // Admin permission server-side যাচাই না হওয়া পর্যন্ত
-  // Admin panel লুকানো থাকবে।
-  panel.style.display = "none";
-});
-
-document.getElementById("adminLogout").onclick = async () => {
-  await signOut(auth);
-};
-</script>
-
-<div style="background:#172438;color:white;padding:20px;border-radius:15px;font-family:Arial">
-  <h2 style="color:#f5c542;text-align:center">🪙 TAP COIN</h2>
-  <input id="guestName" placeholder="Enter Username" style="width:100%;padding:13px;margin:8px 0;box-sizing:border-box">
-  <button id="guestBtn" style="width:100%;padding:13px;background:#f5c542;border:0;border-radius:8px">CREATE GUEST ACCOUNT</button>
-  <p id="statusMsg">Welcome to TAP COIN</p>
-  <p id="myUid" style="font-size:12px;word-break:break-all"></p>
-  <hr>
-  <div id="adminPanel" style="display:none">
-    <h2 style="color:#f5c542">🛡️ ADMIN DASHBOARD</h2>
-    <h3>Total Users: <span id="totalUsers">0</span></h3>
-    <h3>Total Demo Coins: <span id="totalCoins">0</span></h3>
-    <div id="userList">Loading users...</div>
-  </div>
-</div>
-
-<script type="module">
-import { initializeApp, getApps, getApp }
-from "https://www.gstatic.com/firebasejs/12.6.0/firebase-app.js";
-
-import {
-  getAuth, signInAnonymously, onAuthStateChanged
-} from "https://www.gstatic.com/firebasejs/12.6.0/firebase-auth.js";
-
-import {
-  getFirestore, doc, getDoc, setDoc, serverTimestamp,
-  collection, getDocs, updateDoc
-} from "https://www.gstatic.com/firebasejs/12.6.0/firebase-firestore.js";
-
-const firebaseConfig = {
-  apiKey: "AIzaSyDtXQI_wAaZQ7ockqXhC7T6K6wvNwdCUUPQ",
-  authDomain: "tap-coin-6d526.firebaseapp.com",
-  projectId: "tap-coin-6d526",
-  storageBucket: "tap-coin-6d526.firebasestorage.app",
-  messagingSenderId: "170772485510",
-  appId: "1:170772485510:web:f95accc6dbe4a6fb95c807",
-  measurementId: "G-DMH1KPBXFD"
-};
-
-// প্রথম Guest Account খোলার পর নিজের UID দিয়ে এটি বদলাবে।
-const ADMIN_UID = "PASTE_YOUR_ADMIN_UID_HERE";
-
-const app = getApps().length ? getApp() : initializeApp(firebaseConfig);
-const auth = getAuth(app);
-const db = getFirestore(app);
-
-const msg = document.getElementById("statusMsg");
-const uidBox = document.getElementById("myUid");
-const panel = document.getElementById("adminPanel");
-
-document.getElementById("guestBtn").onclick = async () => {
-  const name = document.getElementById("guestName").value.trim();
-  if (!name) {
-    msg.textContent = "Please enter a username.";
-    return;
-  }
-
-  try {
-    msg.textContent = "Creating account...";
-    const result = await signInAnonymously(auth);
-    const user = result.user;
-    const ref = doc(db, "users", user.uid);
-    const existing = await getDoc(ref);
-
-    if (!existing.exists()) {
-      await setDoc(ref, {
-        uid: user.uid,
-        displayName: name,
-        coins: 0,
-        status: "active",
-        createdAt: serverTimestamp()
-      });
-    }
-
-    msg.textContent = "Guest account ready!";
-    uidBox.textContent = "Your User ID: " + user.uid;
-    await showAdmin(user.uid);
-  } catch (error) {
-    msg.textContent = "Error: " + error.message;
-  }
-};
-
-onAuthStateChanged(auth, async user => {
-  if (!user) {
-    panel.style.display = "none";
-    return;
-  }
-  uidBox.textContent = "Your User ID: " + user.uid;
-  await showAdmin(user.uid);
-});
-
-async function showAdmin(uid) {
-  if (uid !== ADMIN_UID || ADMIN_UID === "PASTE_YOUR_ADMIN_UID_HERE") {
-    panel.style.display = "none";
-    return;
-  }
-
-  panel.style.display = "block";
-  const list = document.getElementById("userList");
-  list.textContent = "Loading users...";
-
-  try {
-    const snapshot = await getDocs(collection(db, "users"));
-    let totalCoins = 0;
-    list.innerHTML = "";
-
-    snapshot.forEach(item => {
-      const u = item.data();
-      totalCoins += Number(u.coins || 0);
-
-      const row = document.createElement("div");
-      row.style.cssText = "background:#263950;padding:12px;margin:10px 0;border-radius:9px;overflow-wrap:anywhere";
-
-      const info = document.createElement("p");
-      info.textContent = `${u.displayName || "Guest"} | ID: ${u.uid} | Coins: ${u.coins || 0} | ${u.status || "active"}`;
-
-      const add = document.createElement("button");
-      add.textContent = "+100 Demo Coins";
-      add.onclick = async () => {
-        await updateDoc(doc(db, "users", u.uid), {
-          coins: Number(u.coins || 0) + 100
-        });
-        await showAdmin(uid);
-      };
-
-      const block = document.createElement("button");
-      block.textContent = u.status === "blocked" ? "Unblock User" : "Block User";
-      block.onclick = async () => {
-        await updateDoc(doc(db, "users", u.uid), {
-          status: u.status === "blocked" ? "active" : "blocked"
-        });
-        await showAdmin(uid);
-      };
-
-      row.append(info, add, block);
-      list.appendChild(row);
-    });
-
-    document.getElementById("totalUsers").textContent = snapshot.size;
-    document.getElementById("totalCoins").textContent = totalCoins;
-  } catch (error) {
-    list.textContent = "Admin access not configured: " + error.message;
-  }
-}
-</script>
