@@ -3,161 +3,261 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Tap Coin</title>
+<title>TAP COIN</title>
+
 <style>
 *{box-sizing:border-box}
 body{
- margin:0;background:#080e1d;color:white;
+ margin:0;background:#0b1020;color:white;
  font-family:Arial,sans-serif;padding-bottom:85px
 }
 header{
- text-align:center;padding:20px;
- font-size:27px;font-weight:bold;color:#42e8b5
+ padding:20px;text-align:center;
+ background:#151d32;font-size:25px;font-weight:bold;
+ color:#ffd54a;letter-spacing:2px
 }
-.container{padding:16px}
 .balance{
- background:linear-gradient(135deg,#155e75,#065f46);
- padding:24px;border-radius:20px;text-align:center
+ margin:16px;padding:20px;text-align:center;
+ background:linear-gradient(135deg,#252f50,#151b30);
+ border-radius:20px
 }
-#coins{font-size:40px;font-weight:bold;margin:10px}
-.tap{
- display:block;width:175px;height:175px;
- border-radius:50%;border:7px solid #42e8b5;
- background:#164e63;color:white;font-size:26px;
- font-weight:bold;margin:30px auto;
- box-shadow:0 0 25px #20d6aa
-}
-.card{
- background:#151f33;padding:20px;
- border-radius:16px;margin-top:15px;text-align:center
-}
-.upgrade{
- background:#e5a928;color:#111;
- border:0;padding:13px 25px;
- border-radius:12px;font-weight:bold
-}
-.page{display:none}
+.balance h1{font-size:36px;color:#ffd54a;margin:8px}
+.small{color:#aab4cf;font-size:13px}
+.page{display:none;padding:16px}
 .page.active{display:block}
-nav{
+.card{
+ background:#171f35;padding:20px;border-radius:18px;
+ margin-bottom:15px;text-align:center
+}
+.coin{
+ width:165px;height:165px;border-radius:50%;
+ border:9px solid #ffdf70;
+ background:radial-gradient(circle,#fff4a8,#ffb300,#d77b00);
+ color:#784000;font-size:75px;
+ box-shadow:0 0 30px #ffb52d;
+ cursor:pointer;transition:.12s
+}
+.coin:active{transform:scale(1.13)}
+button{
+ border:0;border-radius:12px;padding:13px 18px;
+ background:#ffbd32;color:#171717;
+ font-size:15px;font-weight:bold;cursor:pointer
+}
+.blue{background:#3978ff;color:white}
+.green{background:#16bd83;color:white}
+.red{background:#f04c68;color:white}
+input,select{
+ width:100%;padding:14px;margin:8px 0;
+ border-radius:10px;border:1px solid #46516d;
+ background:#10182a;color:white;font-size:15px
+}
+.nav{
  position:fixed;bottom:0;left:0;width:100%;
- background:#111a2b;display:flex;
- justify-content:space-around;
- padding:12px 3px;
- border-top:1px solid #26354b;
+ background:#151d32;display:grid;
+ grid-template-columns:repeat(4,1fr);
+ padding:9px 3px;gap:4px
 }
-nav button{
- background:none;border:0;color:#aab6c8;
- font-size:12px;font-weight:bold;
- display:flex;flex-direction:column;
- align-items:center;gap:5px
+.nav button{
+ background:transparent;color:#b9c5df;
+ padding:10px 2px;font-size:12px
 }
-nav button span{font-size:22px}
-nav button.active{color:#42e8b5}
+.nav button.selected{color:#ffd54a}
+.nav span{display:block;font-size:19px;margin-bottom:4px}
+.stat{
+ display:flex;justify-content:space-between;
+ padding:12px;border-bottom:1px solid #303b55
+}
+.notice{color:#ffd36b;font-size:13px;line-height:1.6}
+.item{
+ background:#202a43;padding:13px;border-radius:10px;
+ margin:9px 0;text-align:left
+}
 </style>
 </head>
+
 <body>
 
 <header>🪙 TAP COIN</header>
 
-<!-- HOME -->
-<div id="home" class="page active container">
- <div class="balance">
-  YOUR TOTAL BALANCE
-  <div id="coins">0</div>
-  🪙 TOTAL COINS
- </div>
-
- <div class="card">
-  <h3>⚡ TAP POWER</h3>
-  <h2 id="powerText">+1</h2>
-  <p>LEVEL: <span id="level">1</span></p>
- </div>
-
- <div class="card">
-  <h3>🚀 COIN UPGRADE</h3>
-  <p>Price: <span id="price">100</span> Coins</p>
-  <button class="upgrade" id="upgradeBtn"
-   onclick="upgradePower()">UPGRADE</button>
- </div>
+<div class="balance">
+ <div class="small">YOUR TOTAL BALANCE</div>
+ <h1 id="topCoins">0</h1>
+ <div class="small">TOTAL COINS</div>
 </div>
+
+<!-- HOME -->
+<section id="home" class="page active">
+ <div class="card">
+  <h2>WELCOME TO TAP COIN</h2>
+  <p class="small">Tap and collect coins</p>
+  <button class="coin" onclick="tapCoin()">🪙</button>
+  <h3 style="color:#ffd54a">TAP TO EARN +<span id="powerText">1</span></h3>
+  <p>LEVEL: <b id="levelText">1</b></p>
+ </div>
+
+ <div class="card">
+  <h3>COIN UPGRADE</h3>
+  <p>Next Upgrade: <b id="priceText">100</b> Coins</p>
+  <button onclick="upgrade()">UPGRADE</button>
+ </div>
+</section>
 
 <!-- EARN -->
-<div id="earn" class="page container">
- <div class="balance">
-  <h3>YOUR COINS</h3>
-  <div id="earnCoins">0</div>
- </div>
- <button class="tap" onclick="tapCoin()">
-  TAP<br>+<span id="tapPower">1</span>
- </button>
+<section id="earn" class="page">
  <div class="card">
-  <h3>🪙 TAP TO EARN</h3>
-  প্রতি TAP-এ Coin আয় করো!
+  <h2>💰 EARN COINS</h2>
+  <p>Tap the coin on Home to collect coins.</p>
+  <button onclick="go('home')">START TAPPING</button>
  </div>
-</div>
+ <div class="card">
+  <h3>DAILY BONUS</h3>
+  <p>Collect your demo daily bonus</p>
+  <h2 style="color:#ffd54a">+50 COINS</h2>
+  <button class="green" onclick="dailyBonus()">CLAIM BONUS</button>
+  <p id="dailyMessage" class="notice"></p>
+ </div>
+</section>
 
 <!-- GAME -->
-<div id="game" class="page container">
+<section id="game" class="page">
  <div class="card">
-  <h2>🎮 GAME ZONE</h2>
-  <p>Games coming soon!</p>
+  <h2>🎮 COIN GAME</h2>
+  <p>Press the button to play a simple demo game.</p>
+  <h2>+10 COINS</h2>
+  <button class="blue" onclick="playGame()">PLAY GAME</button>
+  <p id="gameMessage" class="notice"></p>
  </div>
-</div>
+</section>
 
 <!-- REWARDS -->
-<div id="rewards" class="page container">
+<section id="rewards" class="page">
  <div class="card">
   <h2>🎁 REWARDS</h2>
-  <p>Daily rewards coming soon!</p>
+  <h3>TikTok Creator</h3>
+  <h2 style="color:#ff4e76">@memes_pagla</h2>
+  <p>Visit our TikTok profile</p>
+  <a href="https://www.tiktok.com/@memes_pagla"
+   target="_blank" style="text-decoration:none">
+   <button style="background:#ff2450;color:white">
+    VISIT TIKTOK
+   </button>
+  </a>
+  <h2 style="color:#ffd54a">🪙 2000 COINS</h2>
+  <p class="notice">
+   Follow reward is displayed as a promotion.
+   Follow verification and coin credit are not connected yet.
+  </p>
  </div>
-</div>
+</section>
 
-<!-- BOTTOM MENU -->
-<nav>
- <button class="active" onclick="openPage('home',this)">
+<!-- WALLET -->
+<section id="wallet" class="page">
+ <div class="card">
+  <h2>👛 MY WALLET</h2>
+  <p class="small">AVAILABLE COINS</p>
+  <h1 id="walletCoins" style="color:#ffd54a">0</h1>
+  <button onclick="go('withdraw')">WITHDRAW</button>
+ </div>
+ <div class="card">
+  <h3>ACCOUNT INFORMATION</h3>
+  <p class="notice">Demo wallet stored on this device only.</p>
+ </div>
+</section>
+
+<!-- WITHDRAW -->
+<section id="withdraw" class="page">
+ <div class="card">
+  <h2>💸 WITHDRAW</h2>
+  <p>Available Coins</p>
+  <h1 id="withdrawCoins" style="color:#ffd54a">0</h1>
+  <input type="number" id="withdrawAmount"
+   placeholder="Enter coin amount">
+  <select id="paymentMethod">
+   <option value="bKash">bKash</option>
+   <option value="Nagad">Nagad</option>
+  </select>
+  <button class="green" onclick="withdrawRequest()">
+   SUBMIT DEMO REQUEST
+  </button>
+  <p id="withdrawMessage" class="notice"></p>
+  <p class="notice">
+   Demo only: no real money is sent and no payment account
+   details are collected.
+  </p>
+ </div>
+</section>
+
+<!-- HISTORY -->
+<section id="history" class="page">
+ <div class="card">
+  <h2>📜 HISTORY</h2>
+  <div id="historyList">No history yet.</div>
+ </div>
+</section>
+
+<!-- BOTTOM NAVIGATION -->
+<nav class="nav">
+ <button class="selected" onclick="go('home',this)">
   <span>🏠</span>HOME
  </button>
- <button onclick="openPage('earn',this)">
-  <span>🪙</span>EARN
+ <button onclick="go('earn',this)">
+  <span>💰</span>EARN
  </button>
- <button onclick="openPage('game',this)">
+ <button onclick="go('game',this)">
   <span>🎮</span>GAME
  </button>
- <button onclick="openPage('rewards',this)">
+ <button onclick="go('rewards',this)">
   <span>🎁</span>REWARDS
+ </button>
+ <button onclick="go('wallet',this)">
+  <span>👛</span>WALLET
+ </button>
+ <button onclick="go('withdraw',this)">
+  <span>💸</span>WITHDRAW
+ </button>
+ <button onclick="go('history',this)">
+  <span>📜</span>HISTORY
  </button>
 </nav>
 
 <script>
-let coins=Number(localStorage.getItem("tapCoins")||0);
-let power=Number(localStorage.getItem("tapPower")||1);
-let level=Number(localStorage.getItem("tapLevel")||1);
-let price=Number(localStorage.getItem("tapPrice")||100);
+let coins = Number(localStorage.getItem("tc_coins")) || 0;
+let power = Number(localStorage.getItem("tc_power")) || 1;
+let level = Number(localStorage.getItem("tc_level")) || 1;
+let price = Number(localStorage.getItem("tc_price")) || 100;
+let history = JSON.parse(localStorage.getItem("tc_history") || "[]");
 
 function save(){
- localStorage.setItem("tapCoins",coins);
- localStorage.setItem("tapPower",power);
- localStorage.setItem("tapLevel",level);
- localStorage.setItem("tapPrice",price);
+ localStorage.setItem("tc_coins",coins);
+ localStorage.setItem("tc_power",power);
+ localStorage.setItem("tc_level",level);
+ localStorage.setItem("tc_price",price);
+ localStorage.setItem("tc_history",JSON.stringify(history));
+ update();
 }
 
 function update(){
- document.getElementById("coins").innerText=coins.toLocaleString();
- document.getElementById("earnCoins").innerText=coins.toLocaleString();
- document.getElementById("powerText").innerText="+"+power;
- document.getElementById("tapPower").innerText=power;
- document.getElementById("level").innerText=level;
- document.getElementById("price").innerText=price;
- document.getElementById("upgradeBtn").disabled=coins<price;
+ document.getElementById("topCoins").innerText=coins;
+ document.getElementById("walletCoins").innerText=coins;
+ document.getElementById("withdrawCoins").innerText=coins;
+ document.getElementById("powerText").innerText=power;
+ document.getElementById("levelText").innerText=level;
+ document.getElementById("priceText").innerText=price;
+ showHistory();
+}
+
+function addHistory(message){
+ history.unshift(message+" - "+new Date().toLocaleString());
+ history=history.slice(0,30);
 }
 
 function tapCoin(){
  coins+=power;
+ addHistory("Tap +"+power+" coins");
  save();
- update();
 }
 
-function upgradePower(){
+function upgrade(){
  if(coins<price){
   alert("Not enough coins!");
   return;
@@ -166,140 +266,77 @@ function upgradePower(){
  power++;
  level++;
  price*=2;
+ addHistory("Upgrade to level "+level);
  save();
- update();
- alert("Upgrade successful! +" + power + " per tap");
 }
 
-function openPage(id,btn){
+function go(id,btn){
  document.querySelectorAll(".page").forEach(p=>{
   p.classList.remove("active");
  });
  document.getElementById(id).classList.add("active");
 
- document.querySelectorAll("nav button").forEach(b=>{
-  b.classList.remove("active");
+ document.querySelectorAll(".nav button").forEach(b=>{
+  b.classList.remove("selected");
  });
- btn.classList.add("active");
- window.scrollTo(0,0);
+ if(btn) btn.classList.add("selected");
+}
+
+function dailyBonus(){
+ let today=new Date().toDateString();
+ if(localStorage.getItem("tc_daily")===today){
+  document.getElementById("dailyMessage").innerText=
+   "Today's bonus already claimed.";
+  return;
+ }
+ coins+=50;
+ localStorage.setItem("tc_daily",today);
+ addHistory("Daily demo bonus +50 coins");
+ save();
+ document.getElementById("dailyMessage").innerText=
+  "50 demo coins added!";
+}
+
+function playGame(){
+ coins+=10;
+ addHistory("Demo game +10 coins");
+ save();
+ document.getElementById("gameMessage").innerText=
+  "You earned 10 demo coins!";
+}
+
+function withdrawRequest(){
+ let amount=Number(document.getElementById("withdrawAmount").value);
+ if(!amount || amount<1000){
+  document.getElementById("withdrawMessage").innerText=
+   "Minimum demo request is 1000 coins.";
+  return;
+ }
+ if(amount>coins){
+  document.getElementById("withdrawMessage").innerText=
+   "Not enough coins.";
+  return;
+ }
+ addHistory("Demo withdrawal request: "+amount+" coins");
+ save();
+ document.getElementById("withdrawMessage").innerText=
+  "Demo request recorded. No real payment was made.";
+ document.getElementById("withdrawAmount").value="";
+}
+
+function showHistory(){
+ let box=document.getElementById("historyList");
+ if(!history.length){
+  box.innerText="No history yet.";
+  return;
+ }
+ box.innerHTML=history.map(x=>
+  '<div class="item">'+x+'</div>'
+ ).join("");
 }
 
 update();
 </script>
+
 </body>
 </html>
-function openPage(id,btn){
- document.querySelectorAll(".page").forEach(p=>{
-  p.classList.remove("active");
- });
- document.getElementById(id).classList.add("active");
-
- document.querySelectorAll("nav button").forEach(b=>{
-  b.classList.remove("active");
- });
- btn.classList.add("active");
- window.scrollTo(0,0);
-}
-
-<style>
-.tap-coin {
-  width: 150px;
-  height: 150px;
-  border-radius: 50%;
-  border: 8px solid #ffdc55;
-  background: linear-gradient(145deg, #fff176, #ff9800);
-  color: #8a4b00;
-  font-size: 65px;
-  font-weight: bold;
-  box-shadow: 0 0 25px #ffbd35;
-  cursor: pointer;
-  transition: transform 0.15s;
-}
-
-.tap-coin:active {
-  transform: scale(1.18);
-}
-
-.tap-label {
-  color: white;
-  font-size: 17px;
-  margin-top: 12px;
-}
-</style>
-
-<div style="text-align:center; margin:25px;">
-  <button class="tap-coin" onclick="tapCoin()">
-    🪙
-  </button>
-  <div class="tap-label">TAP TO EARN +1</div>
-</div>
-
-<div class="reward-card">
-  <h2>🎵 TikTok Rewards</h2>
-  <h3>@memes_pagla</h3>
-  <p>Follow our TikTok account</p>
-  <h2>🪙 2000 COINS</h2>
-
-  <a href="https://www.tiktok.com/@memes_pagla"
-     target="_blank"
-     style="display:block;background:#ff2450;
-     color:white;padding:14px;border-radius:12px;
-     text-decoration:none;font-weight:bold;">
-     VISIT TIKTOK
-  </a>
-</div>
-
-<div class="withdraw-card">
-  <h2>💰 WITHDRAW</h2>
-
-  <p>YOUR AVAILABLE COINS</p>
-  <h1 id="withdrawBalance">0</h1>
-
-  <input
-    type="number"
-    id="withdrawAmount"
-    placeholder="Enter amount"
-    style="padding:14px;width:90%;border-radius:10px;"
-  >
-
-  <select id="withdrawMethod"
-    style="padding:14px;width:90%;margin-top:12px;">
-    <option value="bKash">bKash</option>
-    <option value="Nagad">Nagad</option>
-  </select>
-
-  <input
-    type="tel"
-    id="withdrawNumber"
-    placeholder="Payment account number"
-    style="padding:14px;width:90%;margin-top:12px;"
-  >
-
-  <button onclick="requestWithdraw()"
-    style="padding:14px;background:#16c784;color:white;
-    border:0;border-radius:10px;margin-top:15px;">
-    WITHDRAW NOW
-  </button>
-
-  <p id="withdrawMessage"></p>
-</div>
-
-<script>
-function requestWithdraw() {
-  const amount = Number(
-    document.getElementById("withdrawAmount").value
-  );
-
-  const method = document.getElementById("withdrawMethod").value;
-  const number = document.getElementById("withdrawNumber").value;
-
-  if (!amount || amount <= 0 || !number) {
-    document.getElementById("withdrawMessage").innerText =
-      "Please enter all information!";
-    return;
-  }
-
-  document.getElementById("withdrawMessage").innerText =
-    "Withdrawal request system is not connected yet.";
-}
-</script>
