@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tap Coin</title>
+<style>
+*{box-sizing:border-box}
+body{
+ margin:0;
+ background:#0b1020;
+ color:white;
+ font-family:Arial,sans-serif;
+}
+header{
+ padding:22px;
+ text-align:center;
+ font-size:26px;
+ font-weight:bold;
+ color:#40e0b0;
+}
+.container{padding:18px}
+.balance{
+ background:linear-gradient(135deg,#164e63,#065f46);
+ padding:28px;
+ border-radius:20px;
+ text-align:center;
+}
+.balance h2{font-size:18px}
+#coins{font-size:38px;font-weight:bold}
+.tap{
+ width:170px;height:170px;
+ border-radius:50%;
+ border:7px solid #40e0b0;
+ background:#123b43;
+ color:white;
+ font-size:25px;
+ font-weight:bold;
+ margin:35px auto;
+ display:block;
+ box-shadow:0 0 25px #20d6aa;
+}
+.tap:active{transform:scale(.94)}
+.info{
+ background:#171f33;
+ padding:18px;
+ border-radius:15px;
+ margin-top:15px;
+ text-align:center;
+}
+nav{
+ display:flex;
+ justify-content:space-around;
+ padding:18px;
+ background:#151d30;
+ position:fixed;
+ bottom:0;width:100%;
+}
+nav span{color:#40e0b0}
+</style>
+</head>
+<body>
+<header>🪙 TAP COIN</header>
+<div class="container">
+ <div class="balance">
+  <h2>YOUR BALANCE</h2>
+  <div id="coins">0</div>
+  <p>Available Coins</p>
+ </div>
+
+ <button class="tap" onclick="tapCoin()">
+  TAP<br>TO EARN
+ </button>
+
+ <div class="info">
+  <h3>⚡ Energy</h3>
+  <p id="energy">100 / 100</p>
+ </div>
+
+ <div class="info">
+  <h3>🎁 Daily Bonus</h3>
+  <p>Coming Soon</p>
+ </div>
+</div>
+
+<nav>
+ <span>🏠 Home</span>
+ <span>🪙 Earn</span>
+ <span>👤 Profile</span>
+</nav>
+
+<script>
+let coins=Number(localStorage.getItem("coins")||0);
+let energy=100;
+
+function update(){
+ document.getElementById("coins").innerText=coins;
+ document.getElementById("energy").innerText=energy+" / 100";
+}
+
+function tapCoin(){
+ if(energy<=0){
+  alert("Energy শেষ!");
+  return;
+ }
+ coins++;
+ energy--;
+ localStorage.setItem("coins",coins);
+ update();
+}
+update();
+</script>
+</body>
+</html>
