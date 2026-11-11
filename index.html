@@ -1,392 +1,357 @@
 
 <!DOCTYPE html>
-<html lang="en">
+<html lang="bn">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<meta name="theme-color" content="#101827">
-<title>TAP COIN</title>
-<style>
-*{box-sizing:border-box}
-body{margin:0;background:#0c1422;color:white;font-family:Arial;padding-bottom:85px}
-header{padding:20px;text-align:center;color:#f5c542;font-size:27px;font-weight:bold}
-.card{background:#172438;margin:14px;padding:20px;border-radius:17px;text-align:center}
-.balance{font-size:40px;color:#f5c542;font-weight:bold}
-.stats{display:flex;gap:10px}
-.stats .card{flex:1;margin:5px;padding:14px}
-.tap{
- width:190px;height:190px;border-radius:50%;
- border:7px solid #f5c542;
- background:linear-gradient(145deg,#ffe27a,#d99a15);
- color:#172438;font-size:32px;font-weight:bold;
- margin:25px auto;display:block;
- box-shadow:0 0 28px #f5c54255;
-}
-.tap:active{transform:scale(.92)}
-button.action{width:100%;padding:14px;background:#f5c542;border:0;border-radius:9px;font-weight:bold;margin-top:10px}
-nav{position:fixed;bottom:0;left:0;right:0;background:#172438;display:flex;justify-content:space-around;padding:12px 2px}
-nav button{background:none;border:0;color:white;font-size:12px}
-.page{display:none}.page.active{display:block}
-</style>
-</head>
-<body>
-
-<header>🪙 TAP COIN</header>
-
-<div id="home" class="page active">
- <div class="card">
-  <p>YOUR TOTAL BALANCE</p>
-  <div class="balance" id="coins">0</div>
-  <p>TOTAL COINS</p>
-  <button class="tap" onclick="tapCoin()">TAP</button>
-  <div class="stats">
-   <div class="card">
-    <small>TAP POWER</small>
-    <h2 id="power">1</h2>
-   </div>
-   <div class="card">
-    <small>LEVEL</small>
-    <h2 id="level">1</h2>
-   </div>
-  </div>
-  <p>Energy: <span id="energy">1000</span>/1000</p>
- </div>
- <div class="card">
-  <h3>⚡ COIN UPGRADE</h3>
-  <p>Price: <span id="price">100</span> Coins</p>
-  <button class="action" onclick="upgrade()">UPGRADE</button>
- </div>
-</div>
-
-<div id="earn" class="page">
- <div class="card">
-  <h2>🎁 DAILY REWARD</h2>
-  <p>Collect 500 Demo Coins once per day.</p>
-  <button class="action" onclick="daily()">CLAIM REWARD</button>
- </div>
- <div class="card">
-  <h2>📋 TASK CENTER</h2>
-  <p>Complete your demo task.</p>
-  <button class="action" onclick="task()">CLAIM 100 COINS</button>
- </div>
-</div>
-
-<div id="game" class="page">
- <div class="card">
-  <h2>🎮 MINI GAME</h2>
-  <p>Play a demo game and earn 50 coins.</p>
-  <button class="action" onclick="game()">PLAY GAME</button>
- </div>
-</div>
-
-<div id="friends" class="page">
- <div class="card">
-  <h2>👥 FRIENDS</h2>
-  <p>Invite your friends to discover TAP COIN.</p>
-  <button class="action" onclick="shareApp()">SHARE APP</button>
- </div>
-</div>
-
-<div id="wallet" class="page">
- <div class="card">
-  <h2>👛 WALLET</h2>
-  <div class="balance" id="walletCoins">0</div>
-  <p>Demo Coins</p>
-  <p>Withdrawal is not available. Coins have no cash value.</p>
- </div>
-</div>
-
-<div id="profile" class="page">
- <div class="card">
-  <h2>👤 PROFILE</h2>
-  <p>TAP COIN Player</p>
-  <p>Account: Local Demo</p>
-  <button class="action" onclick="resetData()">RESET DEMO DATA</button>
- </div>
-</div>
-
-<nav>
- <button onclick="showPage('home')">🏠<br>HOME</button>
- <button onclick="showPage('earn')">🎁<br>EARN</button>
- <button onclick="showPage('game')">🎮<br>GAME</button>
- <button onclick="showPage('friends')">👥<br>FRIENDS</button>
- <button onclick="showPage('wallet')">👛<br>WALLET</button>
- <button onclick="showPage('profile')">👤<br>PROFILE</button>
-</nav>
-
-<script>
-const defaults={coins:0,power:1,level:1,energy:1000,price:100};
-let data;
-try{
- data=JSON.parse(localStorage.getItem("tapcoin_data"))||{...defaults};
-}catch(e){data={...defaults};}
-
-function save(){
- localStorage.setItem("tapcoin_data",JSON.stringify(data));
- update();
-}
-function update(){
- document.getElementById("coins").textContent=data.coins;
- document.getElementById("walletCoins").textContent=data.coins;
- document.getElementById("power").textContent=data.power;
- document.getElementById("level").textContent=data.level;
- document.getElementById("energy").textContent=data.energy;
- document.getElementById("price").textContent=data.price;
-}
-function tapCoin(){
- if(data.energy<data.power){alert("Not enough energy!");return;}
- data.coins+=data.power;
- data.energy-=data.power;
- save();
-}
-function upgrade(){
- if(data.coins<data.price){alert("Not enough coins!");return;}
- data.coins-=data.price;
- data.power++;
- data.level++;
- data.price=Math.floor(data.price*1.8);
- save();
- alert("Upgrade successful!");
-}
-function daily(){
- const today=new Date().toDateString();
- if(localStorage.getItem("tap_daily")===today){
-  alert("Today's reward already claimed!");
-  return;
- }
- data.coins+=500;
- localStorage.setItem("tap_daily",today);
- save();
- alert("500 Demo Coins added!");
-}
-function task(){
- if(localStorage.getItem("tap_task")==="yes"){
-  alert("Task already completed!");
-  return;
- }
- data.coins+=100;
- localStorage.setItem("tap_task","yes");
- save();
- alert("100 Demo Coins added!");
-}
-function game(){
- const today=new Date().toDateString();
- if(localStorage.getItem("tap_game")===today){
-  alert("Come back tomorrow!");
-  return;
- }
- data.coins+=50;
- localStorage.setItem("tap_game",today);
- save();
- alert("You earned 50 Demo Coins!");
-}
-function showPage(id){
- document.querySelectorAll(".page").forEach(p=>p.classList.remove("active"));
- document.getElementById(id).classList.add("active");
-}
-function shareApp(){
- if(navigator.share){
-  navigator.share({title:"TAP COIN",text:"Try TAP COIN!",url:location.href});
- }else{
-  navigator.clipboard.writeText(location.href);
-  alert("App link copied!");
- }
-}
-function resetData(){
- if(confirm("Reset all demo coins and progress?")){
-  localStorage.clear();
-  data={...defaults};
-  save();
-  alert("Demo data reset!");
- }
-}
-setInterval(()=>{
- if(data.energy<1000){
-  data.energy=Math.min(1000,data.energy+1);
-  save();
- }
-},3000);
-update();
-</script>
-</body>
-</html>
-<!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#090e1c">
 <title>TAP COIN</title>
 <style>
 *{box-sizing:border-box}
 body{
- margin:0;background:#101827;color:white;
- font-family:Arial,sans-serif;
- display:flex;justify-content:center;
- padding:25px 12px
+ margin:0;background:#090e1c;color:white;
+ font-family:Arial,sans-serif;padding-bottom:85px
 }
-.app{width:100%;max-width:420px}
+header{
+ display:flex;justify-content:space-between;
+ align-items:center;padding:18px
+}
+.logo{font-size:23px;font-weight:900;color:#f5c84b}
+.profile{
+ background:#19243a;padding:10px 15px;
+ border-radius:25px
+}
+.container{max-width:480px;margin:auto;padding:12px}
 .card{
- background:#1d293b;padding:22px;
- border-radius:18px;margin-bottom:15px
+ background:linear-gradient(145deg,#192640,#10192b);
+ border:1px solid #34425a;border-radius:20px;
+ padding:20px;margin-bottom:15px;text-align:center
 }
-h1{text-align:center;color:#39e6a0}
-input{
- width:100%;padding:14px;margin:8px 0;
- border:1px solid #43516a;border-radius:10px;
- background:#101827;color:white;font-size:16px
+.small{color:#a8b4ca;font-size:13px}
+.balance{font-size:38px;font-weight:bold;color:#ffdb67;margin:12px}
+.coin{
+ width:205px;height:205px;border-radius:50%;
+ margin:22px auto;
+ background:radial-gradient(circle at 35% 30%,#fff1a5,#eebd36 45%,#9b6411 75%,#f9d46c);
+ border:9px solid #ffe59a;
+ box-shadow:0 0 25px #dba83280,inset 0 0 20px #fff4a0;
+ display:flex;align-items:center;justify-content:center;
+ font-size:70px;color:#80500a;
+ cursor:pointer;user-select:none;
+ transition:transform .08s
 }
+.coin:active{transform:scale(.92)}
+.stats{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.stat{
+ background:#17243a;border-radius:15px;padding:15px
+}
+.stat b{display:block;color:#ffdc69;font-size:20px;margin-top:7px}
 button{
- width:100%;padding:14px;border:0;
- border-radius:10px;background:#25d99a;
- font-weight:bold;font-size:16px;margin-top:10px
+ border:0;border-radius:12px;padding:13px;
+ font-weight:bold;cursor:pointer
 }
-.secondary{background:#34445d;color:white}
-.hidden{display:none}
-.note{text-align:center;color:#aab7c9;font-size:13px}
-#message{text-align:center;color:#ffd36b}
+.gold{
+ background:linear-gradient(90deg,#f2bb37,#ffe18a);
+ color:#342207;width:100%
+}
+.nav{
+ position:fixed;bottom:0;left:0;right:0;
+ background:#101a2b;border-top:1px solid #293650;
+ display:flex;justify-content:space-around;
+ padding:12px 2px;z-index:5
+}
+.nav button{
+ background:none;color:#aab7cb;font-size:11px;
+ padding:7px 5px
+}
+.nav button.active{color:#ffd35d}
+.page{display:none}
+.page.active{display:block}
+.item{
+ background:#192640;padding:16px;
+ border-radius:14px;margin:10px 0;
+ display:flex;justify-content:space-between;
+ align-items:center;gap:10px
+}
+.item button{background:#f5cb55;color:#281d07}
+input{
+ width:100%;padding:14px;border-radius:12px;
+ border:1px solid #46536c;background:#101a2b;
+ color:white;margin:10px 0;font-size:16px
+}
+.modal{
+ position:fixed;inset:0;background:#000c;
+ display:none;align-items:center;justify-content:center;
+ padding:20px;z-index:10
+}
+.modalbox{
+ width:100%;max-width:360px;background:#17243a;
+ border:1px solid #47536a;border-radius:20px;padding:22px
+}
 </style>
 </head>
 <body>
-<div class="app">
 
-<div class="card" id="auth">
-<h1> TAP COIN </h1>
-<p class="note">Create Your Account</p>
+<header>
+ <div class="logo">🪙 TAP COIN</div>
+ <div class="profile" onclick="openProfile()">👤 <span id="username">Guest</span></div>
+</header>
 
-<input id="username" placeholder="Username">
-<input id="password" type="password" placeholder="Password">
-<input id="confirm" type="password" placeholder="Confirm Password">
+<div class="container">
 
-<button onclick="register()">CREATE ACCOUNT</button>
-<button class="secondary" onclick="login()">LOGIN</button>
-<p id="message"></p>
+<section id="home" class="page active">
+ <div class="card">
+  <div class="small">TOTAL COIN BALANCE</div>
+  <div class="balance" id="balance">0</div>
+  <div class="small">🪙 Your TAP COIN</div>
+  <div class="coin" onclick="tapCoin()">₿</div>
+  <div class="small">TAP THE COIN TO EARN</div>
+ </div>
+
+ <div class="stats">
+  <div class="stat">⚡ Energy
+   <b id="energy">1000 / 1000</b>
+  </div>
+  <div class="stat">👆 Per Tap
+   <b id="perTap">+1</b>
+  </div>
+ </div>
+ <div class="card" style="margin-top:15px">
+  <div class="small">ENERGY LEVEL</div>
+  <div style="background:#34425a;height:10px;border-radius:20px;margin-top:12px">
+   <div id="energyBar" style="background:#f5c84b;height:10px;width:100%;border-radius:20px"></div>
+  </div>
+ </div>
+</section>
+
+<section id="tasks" class="page">
+ <div class="card">
+  <h2>🎯 TASK CENTER</h2>
+  <p class="small">Complete tasks and earn demo coins</p>
+ </div>
+ <div class="item">
+  <span>📅 Daily Reward<br><small>Collect daily bonus</small></span>
+  <button onclick="daily()">CLAIM</button>
+ </div>
+ <div class="item">
+  <span>🎁 Welcome Bonus<br><small>One-time reward</small></span>
+  <button onclick="welcome()">CLAIM</button>
+ </div>
+ <div class="item">
+  <span>⭐ Tap 100 times<br><small>Earn 100 demo coins</small></span>
+  <button onclick="task100()">CLAIM</button>
+ </div>
+</section>
+
+<section id="upgrade" class="page">
+ <div class="card">
+  <h2>🚀 UPGRADES</h2>
+  <p class="small">Upgrade your tapping power</p>
+ </div>
+ <div class="item">
+  <span>⚡ Tap Power<br><small id="powerInfo">Current: 1</small></span>
+  <button onclick="buyPower()">UPGRADE</button>
+ </div>
+ <div class="item">
+  <span>🔋 Energy Capacity<br><small id="energyInfo">1000 Max</small></span>
+  <button onclick="buyEnergy()">UPGRADE</button>
+ </div>
+</section>
+
+<section id="friends" class="page">
+ <div class="card">
+  <h2>👥 FRIENDS</h2>
+  <p class="small">Invite friends to TAP COIN</p>
+  <h3>Invite System</h3>
+  <p class="small">Referral rewards are not connected yet.</p>
+  <button class="gold" onclick="copyInvite()">COPY APP LINK</button>
+ </div>
+</section>
+
+<section id="wallet" class="page">
+ <div class="card">
+  <h2>💳 WALLET</h2>
+  <div class="balance" id="walletBalance">0</div>
+  <p class="small">Your demo coin balance</p>
+  <hr style="border-color:#34425a">
+  <h3>Withdrawal</h3>
+  <p class="small">Withdrawal is not available yet.</p>
+  <button class="gold" onclick="alert('Withdrawal system is coming soon!')">WITHDRAWAL</button>
+ </div>
+</section>
+
+<section id="profile" class="page">
+ <div class="card">
+  <h2>👤 MY PROFILE</h2>
+  <h3 id="profileName">Guest</h3>
+  <p class="small">TAP COIN Member</p>
+  <p>Total Coins: <b id="profileCoins">0</b></p>
+  <button class="gold" onclick="openProfile()">EDIT USERNAME</button>
+  <br><br>
+  <button onclick="resetGame()" style="background:#8b3030;color:white;width:100%">RESET DEMO DATA</button>
+ </div>
+</section>
+
 </div>
 
-<div class="card hidden" id="home">
-<h1>TAP COIN</h1>
-<p id="welcome"></p>
-<h2>Total Coins: <span id="coins">0</span></h2>
-<button onclick="tapCoin()">TAP +1 COIN</button>
-<button class="secondary" onclick="logout()">LOGOUT</button>
+<nav class="nav">
+ <button class="active" onclick="showPage('home',this)">🪙<br>Home</button>
+ <button onclick="showPage('tasks',this)">🎯<br>Tasks</button>
+ <button onclick="showPage('upgrade',this)">🚀<br>Upgrade</button>
+ <button onclick="showPage('friends',this)">👥<br>Friends</button>
+ <button onclick="showPage('wallet',this)">💳<br>Wallet</button>
+</nav>
+
+<div class="modal" id="profileModal">
+ <div class="modalbox">
+  <h2>👤 CREATE ACCOUNT</h2>
+  <p class="small">Choose your username</p>
+  <input id="nameInput" maxlength="20" placeholder="Enter username">
+  <button class="gold" onclick="saveName()">CREATE ACCOUNT</button>
+  <br><br>
+  <button onclick="closeProfile()" style="width:100%;background:#34425a;color:white">CLOSE</button>
+ </div>
 </div>
 
-</div>
-
-<script type="module">
-import {initializeApp}
-from "https://www.gstatic.com/firebasejs/12.6.0/firebase-app.js";
-
-import {
- getAuth,createUserWithEmailAndPassword,
- signInWithEmailAndPassword,signOut,
- onAuthStateChanged
-} from "https://www.gstatic.com/firebasejs/12.6.0/firebase-auth.js";
-
-import {
- getFirestore,doc,setDoc,getDoc,updateDoc
-} from "https://www.gstatic.com/firebasejs/12.6.0/firebase-firestore.js";
-
-// নিজের Firebase Config বসাও
-const firebaseConfig = {
- apiKey: "YOUR_API_KEY",
- authDomain: "YOUR_PROJECT.firebaseapp.com",
- projectId: "YOUR_PROJECT_ID",
- storageBucket: "YOUR_PROJECT.firebasestorage.app",
- messagingSenderId: "YOUR_SENDER_ID",
- appId: "YOUR_APP_ID"
+<script>
+const defaults={
+ coins:0,energy:1000,maxEnergy:1000,
+ power:1,energyLevel:0,name:"",
+ taps:0,lastEnergy:Date.now(),
+ dailyDate:"",welcome:false,task100:false
 };
 
-const app=initializeApp(firebaseConfig);
-const auth=getAuth(app);
-const db=getFirestore(app);
+let data;
+try{
+ data={...defaults,...JSON.parse(localStorage.getItem("tapcoin_data")||"{}")};
+}catch(e){data={...defaults}}
 
-const $=id=>document.getElementById(id);
-const msg=t=>$("message").textContent=t;
-
-// Username থেকে অভ্যন্তরীণ Login ID
-function getEmail(name){
- return name.trim().toLowerCase()+"@tapcoin.local";
+function save(){
+ data.lastEnergy=Date.now();
+ localStorage.setItem("tapcoin_data",JSON.stringify(data));
+ render();
 }
 
-window.register=async()=>{
- const name=$("username").value.trim();
- const pass=$("password").value;
- const confirm=$("confirm").value;
+function render(){
+ document.getElementById("balance").textContent=Math.floor(data.coins).toLocaleString();
+ document.getElementById("walletBalance").textContent=Math.floor(data.coins).toLocaleString();
+ document.getElementById("energy").textContent=data.energy+" / "+data.maxEnergy;
+ document.getElementById("perTap").textContent="+"+data.power;
+ document.getElementById("energyBar").style.width=(data.energy/data.maxEnergy*100)+"%";
+ document.getElementById("username").textContent=data.name||"Guest";
+ document.getElementById("profileName").textContent=data.name||"Guest";
+ document.getElementById("profileCoins").textContent=Math.floor(data.coins);
+ document.getElementById("powerInfo").textContent="Current: "+data.power;
+ document.getElementById("energyInfo").textContent=data.maxEnergy+" Max";
+}
 
- if(!/^[a-zA-Z0-9_]{3,20}$/.test(name)){
-  return msg("Username 3-20 characters হতে হবে");
+function tapCoin(){
+ if(data.energy<=0){
+  alert("Energy finished! Please wait to recharge.");
+  return;
  }
- if(pass.length<8)return msg("Password কমপক্ষে 8 অক্ষরের দিন");
- if(pass!==confirm)return msg("Password মিলছে না");
+ data.coins+=data.power;
+ data.energy--;
+ data.taps++;
+ save();
+}
 
- try{
-  const credential=await createUserWithEmailAndPassword(
-   auth,getEmail(name),pass
-  );
-
-  await setDoc(doc(db,"users",credential.user.uid),{
-   username:name,
-   coins:0,
-   createdAt:new Date().toISOString(),
-   role:"user"
-  });
-
-  msg("Account created successfully!");
- }catch(e){
-  msg(e.code==="auth/email-already-in-use"
-   ?"Username already exists"
-   :e.message);
+function recharge(){
+ const now=Date.now();
+ const elapsed=Math.floor((now-data.lastEnergy)/3000);
+ if(elapsed>0){
+  data.energy=Math.min(data.maxEnergy,data.energy+elapsed);
+  data.lastEnergy+=elapsed*3000;
+  localStorage.setItem("tapcoin_data",JSON.stringify(data));
+  render();
  }
-};
+}
 
-window.login=async()=>{
- const name=$("username").value.trim();
- const pass=$("password").value;
+function daily(){
+ const today=new Date().toLocaleDateString();
+ if(data.dailyDate===today)return alert("Today's reward already claimed!");
+ data.coins+=100;
+ data.dailyDate=today;
+ save();
+ alert("100 demo coins added!");
+}
 
- if(!name||!pass)return msg("Username ও Password দিন");
+function welcome(){
+ if(data.welcome)return alert("Already claimed!");
+ data.welcome=true;
+ data.coins+=50;
+ save();
+ alert("Welcome bonus: 50 coins!");
+}
 
- try{
-  await signInWithEmailAndPassword(auth,getEmail(name),pass);
- }catch(e){
-  msg("Login failed: "+e.message);
+function task100(){
+ if(data.task100)return alert("Reward already claimed!");
+ if(data.taps<100)return alert("Tap 100 times first!");
+ data.task100=true;
+ data.coins+=100;
+ save();
+ alert("100 demo coins added!");
+}
+
+function buyPower(){
+ const cost=data.power*100;
+ if(data.coins<cost)return alert("Not enough coins!");
+ data.coins-=cost;
+ data.power++;
+ save();
+ alert("Tap Power upgraded!");
+}
+
+function buyEnergy(){
+ const cost=data.maxEnergy/2;
+ if(data.coins<cost)return alert("Not enough coins!");
+ data.coins-=cost;
+ data.maxEnergy+=500;
+ data.energy=data.maxEnergy;
+ save();
+ alert("Energy upgraded!");
+}
+
+function showPage(id,btn){
+ document.querySelectorAll(".page").forEach(p=>p.classList.remove("active"));
+ document.getElementById(id).classList.add("active");
+ document.querySelectorAll(".nav button").forEach(b=>b.classList.remove("active"));
+ btn.classList.add("active");
+}
+
+function openProfile(){
+ document.getElementById("nameInput").value=data.name;
+ document.getElementById("profileModal").style.display="flex";
+}
+function closeProfile(){
+ document.getElementById("profileModal").style.display="none";
+}
+function saveName(){
+ const name=document.getElementById("nameInput").value.trim();
+ if(name.length<3)return alert("Enter at least 3 characters!");
+ data.name=name;
+ save();
+ closeProfile();
+ alert("Username saved!");
+}
+
+function copyInvite(){
+ navigator.clipboard.writeText(location.href)
+ .then(()=>alert("App link copied!"))
+ .catch(()=>alert("Copy this link: "+location.href));
+}
+
+function resetGame(){
+ if(confirm("Reset all demo data?")){
+  localStorage.removeItem("tapcoin_data");
+  data={...defaults};
+  save();
  }
-};
+}
 
-window.logout=async()=>{
- await signOut(auth);
-};
-
-window.tapCoin=async()=>{
- const user=auth.currentUser;
- if(!user)return;
-
- const ref=doc(db,"users",user.uid);
- const snap=await getDoc(ref);
- if(!snap.exists())return;
-
- const coins=Number(snap.data().coins||0)+1;
- await updateDoc(ref,{coins});
- $("coins").textContent=coins;
-};
-
-onAuthStateChanged(auth,async user=>{
- if(user){
-  try{
-   const snap=await getDoc(doc(db,"users",user.uid));
-   if(!snap.exists())throw new Error("User profile missing");
-
-   $("auth").classList.add("hidden");
-   $("home").classList.remove("hidden");
-   $("welcome").textContent="Welcome "+snap.data().username;
-   $("coins").textContent=snap.data().coins||0;
-  }catch(e){
-   msg(e.message);
-  }
- }else{
-  $("auth").classList.remove("hidden");
-  $("home").classList.add("hidden");
- }
-});
+render();
+recharge();
+setInterval(recharge,3000);
 </script>
 </body>
 </html>
