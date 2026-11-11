@@ -210,3 +210,183 @@ update();
 </script>
 </body>
 </html>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>TAP COIN</title>
+<style>
+*{box-sizing:border-box}
+body{
+ margin:0;background:#101827;color:white;
+ font-family:Arial,sans-serif;
+ display:flex;justify-content:center;
+ padding:25px 12px
+}
+.app{width:100%;max-width:420px}
+.card{
+ background:#1d293b;padding:22px;
+ border-radius:18px;margin-bottom:15px
+}
+h1{text-align:center;color:#39e6a0}
+input{
+ width:100%;padding:14px;margin:8px 0;
+ border:1px solid #43516a;border-radius:10px;
+ background:#101827;color:white;font-size:16px
+}
+button{
+ width:100%;padding:14px;border:0;
+ border-radius:10px;background:#25d99a;
+ font-weight:bold;font-size:16px;margin-top:10px
+}
+.secondary{background:#34445d;color:white}
+.hidden{display:none}
+.note{text-align:center;color:#aab7c9;font-size:13px}
+#message{text-align:center;color:#ffd36b}
+</style>
+</head>
+<body>
+<div class="app">
+
+<div class="card" id="auth">
+<h1> TAP COIN </h1>
+<p class="note">Create Your Account</p>
+
+<input id="username" placeholder="Username">
+<input id="password" type="password" placeholder="Password">
+<input id="confirm" type="password" placeholder="Confirm Password">
+
+<button onclick="register()">CREATE ACCOUNT</button>
+<button class="secondary" onclick="login()">LOGIN</button>
+<p id="message"></p>
+</div>
+
+<div class="card hidden" id="home">
+<h1>TAP COIN</h1>
+<p id="welcome"></p>
+<h2>Total Coins: <span id="coins">0</span></h2>
+<button onclick="tapCoin()">TAP +1 COIN</button>
+<button class="secondary" onclick="logout()">LOGOUT</button>
+</div>
+
+</div>
+
+<script type="module">
+import {initializeApp}
+from "https://www.gstatic.com/firebasejs/12.6.0/firebase-app.js";
+
+import {
+ getAuth,createUserWithEmailAndPassword,
+ signInWithEmailAndPassword,signOut,
+ onAuthStateChanged
+} from "https://www.gstatic.com/firebasejs/12.6.0/firebase-auth.js";
+
+import {
+ getFirestore,doc,setDoc,getDoc,updateDoc
+} from "https://www.gstatic.com/firebasejs/12.6.0/firebase-firestore.js";
+
+// নিজের Firebase Config বসাও
+const firebaseConfig = {
+ apiKey: "YOUR_API_KEY",
+ authDomain: "YOUR_PROJECT.firebaseapp.com",
+ projectId: "YOUR_PROJECT_ID",
+ storageBucket: "YOUR_PROJECT.firebasestorage.app",
+ messagingSenderId: "YOUR_SENDER_ID",
+ appId: "YOUR_APP_ID"
+};
+
+const app=initializeApp(firebaseConfig);
+const auth=getAuth(app);
+const db=getFirestore(app);
+
+const $=id=>document.getElementById(id);
+const msg=t=>$("message").textContent=t;
+
+// Username থেকে অভ্যন্তরীণ Login ID
+function getEmail(name){
+ return name.trim().toLowerCase()+"@tapcoin.local";
+}
+
+window.register=async()=>{
+ const name=$("username").value.trim();
+ const pass=$("password").value;
+ const confirm=$("confirm").value;
+
+ if(!/^[a-zA-Z0-9_]{3,20}$/.test(name)){
+  return msg("Username 3-20 characters হতে হবে");
+ }
+ if(pass.length<8)return msg("Password কমপক্ষে 8 অক্ষরের দিন");
+ if(pass!==confirm)return msg("Password মিলছে না");
+
+ try{
+  const credential=await createUserWithEmailAndPassword(
+   auth,getEmail(name),pass
+  );
+
+  await setDoc(doc(db,"users",credential.user.uid),{
+   username:name,
+   coins:0,
+   createdAt:new Date().toISOString(),
+   role:"user"
+  });
+
+  msg("Account created successfully!");
+ }catch(e){
+  msg(e.code==="auth/email-already-in-use"
+   ?"Username already exists"
+   :e.message);
+ }
+};
+
+window.login=async()=>{
+ const name=$("username").value.trim();
+ const pass=$("password").value;
+
+ if(!name||!pass)return msg("Username ও Password দিন");
+
+ try{
+  await signInWithEmailAndPassword(auth,getEmail(name),pass);
+ }catch(e){
+  msg("Login failed: "+e.message);
+ }
+};
+
+window.logout=async()=>{
+ await signOut(auth);
+};
+
+window.tapCoin=async()=>{
+ const user=auth.currentUser;
+ if(!user)return;
+
+ const ref=doc(db,"users",user.uid);
+ const snap=await getDoc(ref);
+ if(!snap.exists())return;
+
+ const coins=Number(snap.data().coins||0)+1;
+ await updateDoc(ref,{coins});
+ $("coins").textContent=coins;
+};
+
+onAuthStateChanged(auth,async user=>{
+ if(user){
+  try{
+   const snap=await getDoc(doc(db,"users",user.uid));
+   if(!snap.exists())throw new Error("User profile missing");
+
+   $("auth").classList.add("hidden");
+   $("home").classList.remove("hidden");
+   $("welcome").textContent="Welcome "+snap.data().username;
+   $("coins").textContent=snap.data().coins||0;
+  }catch(e){
+   msg(e.message);
+  }
+ }else{
+  $("auth").classList.remove("hidden");
+  $("home").classList.add("hidden");
+ }
+});
+</script>
+</body>
+</html>
