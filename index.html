@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="bn">
 <head>
@@ -8,86 +7,35 @@
 <title>TAP COIN</title>
 <style>
 *{box-sizing:border-box}
-body{
- margin:0;background:#090e1c;color:white;
- font-family:Arial,sans-serif;padding-bottom:85px
-}
-header{
- display:flex;justify-content:space-between;
- align-items:center;padding:18px
-}
-.logo{font-size:23px;font-weight:900;color:#f5c84b}
-.profile{
- background:#19243a;padding:10px 15px;
- border-radius:25px
-}
+body{margin:0;background:#090e1c;color:white;font-family:Arial;padding-bottom:85px}
+header{display:flex;justify-content:space-between;padding:18px}
+.logo{font-size:23px;font-weight:bold;color:#f5c84b}
+.profile{background:#19243a;padding:10px 15px;border-radius:25px}
 .container{max-width:480px;margin:auto;padding:12px}
-.card{
- background:linear-gradient(145deg,#192640,#10192b);
- border:1px solid #34425a;border-radius:20px;
- padding:20px;margin-bottom:15px;text-align:center
-}
+.card{background:linear-gradient(145deg,#192640,#10192b);border:1px solid #34425a;border-radius:20px;padding:20px;margin-bottom:15px;text-align:center}
 .small{color:#a8b4ca;font-size:13px}
-.balance{font-size:38px;font-weight:bold;color:#ffdb67;margin:12px}
-.coin{
- width:205px;height:205px;border-radius:50%;
- margin:22px auto;
- background:radial-gradient(circle at 35% 30%,#fff1a5,#eebd36 45%,#9b6411 75%,#f9d46c);
- border:9px solid #ffe59a;
- box-shadow:0 0 25px #dba83280,inset 0 0 20px #fff4a0;
- display:flex;align-items:center;justify-content:center;
- font-size:70px;color:#80500a;
- cursor:pointer;user-select:none;
- transition:transform .08s
-}
-.coin:active{transform:scale(.92)}
+.balance{font-size:36px;font-weight:bold;color:#ffdb67;margin:12px}
+.coin{width:190px;height:190px;border-radius:50%;margin:22px auto;background:radial-gradient(circle at 35% 30%,#fff1a5,#eebd36 45%,#9b6411 75%);border:9px solid #ffe59a;display:flex;align-items:center;justify-content:center;font-size:65px;color:#80500a;cursor:pointer}
 .stats{display:grid;grid-template-columns:1fr 1fr;gap:12px}
-.stat{
- background:#17243a;border-radius:15px;padding:15px
-}
+.stat{background:#17243a;border-radius:15px;padding:15px}
 .stat b{display:block;color:#ffdc69;font-size:20px;margin-top:7px}
-button{
- border:0;border-radius:12px;padding:13px;
- font-weight:bold;cursor:pointer
-}
-.gold{
- background:linear-gradient(90deg,#f2bb37,#ffe18a);
- color:#342207;width:100%
-}
-.nav{
- position:fixed;bottom:0;left:0;right:0;
- background:#101a2b;border-top:1px solid #293650;
- display:flex;justify-content:space-around;
- padding:12px 2px;z-index:5
-}
-.nav button{
- background:none;color:#aab7cb;font-size:11px;
- padding:7px 5px
-}
+button{border:0;border-radius:12px;padding:13px;font-weight:bold;cursor:pointer}
+.gold{background:linear-gradient(90deg,#f2bb37,#ffe18a);color:#342207;width:100%}
+.nav{position:fixed;bottom:0;left:0;right:0;background:#101a2b;border-top:1px solid #293650;display:flex;justify-content:space-around;padding:10px 2px;z-index:5}
+.nav button{background:none;color:#aab7cb;font-size:11px;padding:7px 5px}
 .nav button.active{color:#ffd35d}
-.page{display:none}
-.page.active{display:block}
-.item{
- background:#192640;padding:16px;
- border-radius:14px;margin:10px 0;
- display:flex;justify-content:space-between;
- align-items:center;gap:10px
-}
+.page{display:none}.page.active{display:block}
+.item{background:#192640;padding:15px;border-radius:14px;margin:10px 0;display:flex;justify-content:space-between;align-items:center;gap:10px}
 .item button{background:#f5cb55;color:#281d07}
-input{
- width:100%;padding:14px;border-radius:12px;
- border:1px solid #46536c;background:#101a2b;
- color:white;margin:10px 0;font-size:16px
-}
-.modal{
- position:fixed;inset:0;background:#000c;
- display:none;align-items:center;justify-content:center;
- padding:20px;z-index:10
-}
-.modalbox{
- width:100%;max-width:360px;background:#17243a;
- border:1px solid #47536a;border-radius:20px;padding:22px
-}
+input,select{width:100%;padding:14px;border-radius:12px;border:1px solid #46536c;background:#101a2b;color:white;margin:10px 0;font-size:16px}
+.method,.channels{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:15px 0}
+.method button,.channels button{background:#24334d;color:white;border:1px solid #40516b}
+.method button.selected,.channels button.selected{border:2px solid #ffcf51;color:#ffdb67}
+.notice{background:#49351b;border:1px solid #80612c;color:#ffe3a1;padding:12px;border-radius:12px;font-size:12px;line-height:1.6;margin:12px 0;text-align:left}
+.history{background:#192640;padding:13px;border-radius:12px;margin:9px 0;text-align:left;font-size:13px}
+.pending{color:#ffcf51}
+.modal{position:fixed;inset:0;background:#000c;display:none;align-items:center;justify-content:center;padding:20px;z-index:10}
+.modalbox{width:100%;max-width:360px;background:#17243a;border:1px solid #47536a;border-radius:20px;padding:22px}
 </style>
 </head>
 <body>
@@ -107,16 +55,11 @@ input{
   <div class="coin" onclick="tapCoin()">₿</div>
   <div class="small">TAP THE COIN TO EARN</div>
  </div>
-
  <div class="stats">
-  <div class="stat">⚡ Energy
-   <b id="energy">1000 / 1000</b>
-  </div>
-  <div class="stat">👆 Per Tap
-   <b id="perTap">+1</b>
-  </div>
+  <div class="stat">⚡ Energy<b id="energy">1000 / 1000</b></div>
+  <div class="stat">👆 Per Tap<b id="perTap">+1</b></div>
  </div>
- <div class="card" style="margin-top:15px">
+ <div class="card">
   <div class="small">ENERGY LEVEL</div>
   <div style="background:#34425a;height:10px;border-radius:20px;margin-top:12px">
    <div id="energyBar" style="background:#f5c84b;height:10px;width:100%;border-radius:20px"></div>
@@ -125,58 +68,79 @@ input{
 </section>
 
 <section id="tasks" class="page">
- <div class="card">
-  <h2>🎯 TASK CENTER</h2>
-  <p class="small">Complete tasks and earn demo coins</p>
- </div>
- <div class="item">
-  <span>📅 Daily Reward<br><small>Collect daily bonus</small></span>
-  <button onclick="daily()">CLAIM</button>
- </div>
- <div class="item">
-  <span>🎁 Welcome Bonus<br><small>One-time reward</small></span>
-  <button onclick="welcome()">CLAIM</button>
- </div>
- <div class="item">
-  <span>⭐ Tap 100 times<br><small>Earn 100 demo coins</small></span>
-  <button onclick="task100()">CLAIM</button>
- </div>
+ <div class="card"><h2>🎯 TASK CENTER</h2><p class="small">Complete tasks and earn demo coins</p></div>
+ <div class="item"><span>📅 Daily Reward</span><button onclick="daily()">CLAIM</button></div>
+ <div class="item"><span>🎁 Welcome Bonus</span><button onclick="welcome()">CLAIM</button></div>
+ <div class="item"><span>⭐ Tap 100 times</span><button onclick="task100()">CLAIM</button></div>
 </section>
 
 <section id="upgrade" class="page">
- <div class="card">
-  <h2>🚀 UPGRADES</h2>
-  <p class="small">Upgrade your tapping power</p>
- </div>
- <div class="item">
-  <span>⚡ Tap Power<br><small id="powerInfo">Current: 1</small></span>
-  <button onclick="buyPower()">UPGRADE</button>
- </div>
- <div class="item">
-  <span>🔋 Energy Capacity<br><small id="energyInfo">1000 Max</small></span>
-  <button onclick="buyEnergy()">UPGRADE</button>
- </div>
+ <div class="card"><h2>🚀 UPGRADES</h2></div>
+ <div class="item"><span>⚡ Tap Power<br><small id="powerInfo"></small></span><button onclick="buyPower()">UPGRADE</button></div>
+ <div class="item"><span>🔋 Energy Capacity<br><small id="energyInfo"></small></span><button onclick="buyEnergy()">UPGRADE</button></div>
 </section>
 
 <section id="friends" class="page">
  <div class="card">
   <h2>👥 FRIENDS</h2>
   <p class="small">Invite friends to TAP COIN</p>
-  <h3>Invite System</h3>
-  <p class="small">Referral rewards are not connected yet.</p>
   <button class="gold" onclick="copyInvite()">COPY APP LINK</button>
  </div>
 </section>
 
 <section id="wallet" class="page">
  <div class="card">
-  <h2>💳 WALLET</h2>
+  <h2>💳 MY WALLET</h2>
   <div class="balance" id="walletBalance">0</div>
-  <p class="small">Your demo coin balance</p>
-  <hr style="border-color:#34425a">
-  <h3>Withdrawal</h3>
-  <p class="small">Withdrawal is not available yet.</p>
-  <button class="gold" onclick="alert('Withdrawal system is coming soon!')">WITHDRAWAL</button>
+  <p class="small">Demo Coin Balance</p>
+ </div>
+
+ <div class="card">
+  <h2>💰 DEPOSIT</h2>
+  <p class="small">Select Payment Method</p>
+
+  <div class="method">
+   <button id="nagadBtn" class="selected" onclick="selectMethod('NAGAD')">🟠 NAGAD</button>
+   <button id="bkashBtn" onclick="selectMethod('bKash')">🩷 bKash</button>
+  </div>
+
+  <div class="notice">0% APP FEE<br>Minimum ৳500 - Maximum ৳50,000</div>
+
+  <p class="small">PAYMENT CHANNEL</p>
+  <div class="channels" id="channels">
+   <button class="selected" onclick="selectChannel('NAGAD',this)">NAGAD</button>
+   <button onclick="selectChannel('bKash',this)">bKash</button>
+   <button onclick="selectChannel('BNpay',this)">BNpay</button>
+   <button onclick="selectChannel('DKpay',this)">DKpay</button>
+   <button onclick="selectChannel('VCpay',this)">VCpay</button>
+   <button onclick="selectChannel('889pay',this)">889pay</button>
+   <button onclick="selectChannel('HFpay',this)">HFpay</button>
+   <button onclick="selectChannel('Luckpay',this)">Luckpay</button>
+   <button onclick="selectChannel('SHpay',this)">SHpay</button>
+   <button onclick="selectChannel('Onepay',this)">Onepay</button>
+   <button onclick="selectChannel('su77',this)">su77</button>
+   <button onclick="selectChannel('Safepay',this)">Safepay</button>
+   <button onclick="selectChannel('ZenithPay',this)">ZenithPay</button>
+   <button onclick="selectChannel('MMPAY',this)">MMPAY</button>
+  </div>
+
+  <p class="small">DEPOSIT AMOUNT (BDT)</p>
+  <input type="number" id="amount" placeholder="Enter amount 500-50000" min="500" max="50000">
+
+  <div class="notice">
+   ⚠️ DEMO PAYMENT SYSTEM<br>
+   এখানে এখনো কোনো আসল পেমেন্ট নম্বর বা QR যুক্ত করা হয়নি। আসল টাকা পাঠাবেন না। QR Code একবার ব্যবহারের নিয়মও এখনো চালু নেই।
+  </div>
+
+  <p class="small">TRANSACTION ID</p>
+  <input id="trx" placeholder="Enter Transaction ID">
+
+  <button class="gold" onclick="submitDeposit()">SUBMIT DEPOSIT</button>
+ </div>
+
+ <div class="card">
+  <h3>📜 DEPOSIT HISTORY</h3>
+  <div id="history"><p class="small">No deposit history</p></div>
  </div>
 </section>
 
@@ -184,7 +148,6 @@ input{
  <div class="card">
   <h2>👤 MY PROFILE</h2>
   <h3 id="profileName">Guest</h3>
-  <p class="small">TAP COIN Member</p>
   <p>Total Coins: <b id="profileCoins">0</b></p>
   <button class="gold" onclick="openProfile()">EDIT USERNAME</button>
   <br><br>
@@ -205,9 +168,8 @@ input{
 <div class="modal" id="profileModal">
  <div class="modalbox">
   <h2>👤 CREATE ACCOUNT</h2>
-  <p class="small">Choose your username</p>
   <input id="nameInput" maxlength="20" placeholder="Enter username">
-  <button class="gold" onclick="saveName()">CREATE ACCOUNT</button>
+  <button class="gold" onclick="saveName()">SAVE ACCOUNT</button>
   <br><br>
   <button onclick="closeProfile()" style="width:100%;background:#34425a;color:white">CLOSE</button>
  </div>
@@ -215,10 +177,10 @@ input{
 
 <script>
 const defaults={
- coins:0,energy:1000,maxEnergy:1000,
- power:1,energyLevel:0,name:"",
- taps:0,lastEnergy:Date.now(),
- dailyDate:"",welcome:false,task100:false
+ coins:0,energy:1000,maxEnergy:1000,power:1,
+ name:"",taps:0,lastEnergy:Date.now(),
+ dailyDate:"",welcome:false,task100:false,
+ deposits:[]
 };
 
 let data;
@@ -226,8 +188,12 @@ try{
  data={...defaults,...JSON.parse(localStorage.getItem("tapcoin_data")||"{}")};
 }catch(e){data={...defaults}}
 
+data.deposits=Array.isArray(data.deposits)?data.deposits:[];
+
+let selectedMethod="NAGAD";
+let selectedChannel="NAGAD";
+
 function save(){
- data.lastEnergy=Date.now();
  localStorage.setItem("tapcoin_data",JSON.stringify(data));
  render();
 }
@@ -243,13 +209,11 @@ function render(){
  document.getElementById("profileCoins").textContent=Math.floor(data.coins);
  document.getElementById("powerInfo").textContent="Current: "+data.power;
  document.getElementById("energyInfo").textContent=data.maxEnergy+" Max";
+ renderHistory();
 }
 
 function tapCoin(){
- if(data.energy<=0){
-  alert("Energy finished! Please wait to recharge.");
-  return;
- }
+ if(data.energy<=0)return alert("Energy finished!");
  data.coins+=data.power;
  data.energy--;
  data.taps++;
@@ -257,59 +221,46 @@ function tapCoin(){
 }
 
 function recharge(){
- const now=Date.now();
- const elapsed=Math.floor((now-data.lastEnergy)/3000);
+ let now=Date.now();
+ let elapsed=Math.floor((now-data.lastEnergy)/3000);
  if(elapsed>0){
   data.energy=Math.min(data.maxEnergy,data.energy+elapsed);
   data.lastEnergy+=elapsed*3000;
-  localStorage.setItem("tapcoin_data",JSON.stringify(data));
-  render();
+  save();
  }
 }
 
 function daily(){
- const today=new Date().toLocaleDateString();
- if(data.dailyDate===today)return alert("Today's reward already claimed!");
- data.coins+=100;
- data.dailyDate=today;
- save();
+ let today=new Date().toLocaleDateString();
+ if(data.dailyDate===today)return alert("Already claimed!");
+ data.dailyDate=today;data.coins+=100;save();
  alert("100 demo coins added!");
 }
 
 function welcome(){
  if(data.welcome)return alert("Already claimed!");
- data.welcome=true;
- data.coins+=50;
- save();
- alert("Welcome bonus: 50 coins!");
+ data.welcome=true;data.coins+=50;save();
+ alert("50 demo coins added!");
 }
 
 function task100(){
- if(data.task100)return alert("Reward already claimed!");
+ if(data.task100)return alert("Already claimed!");
  if(data.taps<100)return alert("Tap 100 times first!");
- data.task100=true;
- data.coins+=100;
- save();
+ data.task100=true;data.coins+=100;save();
  alert("100 demo coins added!");
 }
 
 function buyPower(){
- const cost=data.power*100;
+ let cost=data.power*100;
  if(data.coins<cost)return alert("Not enough coins!");
- data.coins-=cost;
- data.power++;
- save();
- alert("Tap Power upgraded!");
+ data.coins-=cost;data.power++;save();
 }
 
 function buyEnergy(){
- const cost=data.maxEnergy/2;
+ let cost=data.maxEnergy/2;
  if(data.coins<cost)return alert("Not enough coins!");
- data.coins-=cost;
- data.maxEnergy+=500;
- data.energy=data.maxEnergy;
- save();
- alert("Energy upgraded!");
+ data.coins-=cost;data.maxEnergy+=500;
+ data.energy=data.maxEnergy;save();
 }
 
 function showPage(id,btn){
@@ -327,26 +278,109 @@ function closeProfile(){
  document.getElementById("profileModal").style.display="none";
 }
 function saveName(){
- const name=document.getElementById("nameInput").value.trim();
+ let name=document.getElementById("nameInput").value.trim();
  if(name.length<3)return alert("Enter at least 3 characters!");
- data.name=name;
- save();
- closeProfile();
- alert("Username saved!");
+ data.name=name;save();closeProfile();
 }
 
 function copyInvite(){
- navigator.clipboard.writeText(location.href)
- .then(()=>alert("App link copied!"))
- .catch(()=>alert("Copy this link: "+location.href));
+ if(navigator.clipboard){
+  navigator.clipboard.writeText(location.href)
+  .then(()=>alert("App link copied!"))
+  .catch(()=>alert(location.href));
+ }else alert(location.href);
 }
 
 function resetGame(){
  if(confirm("Reset all demo data?")){
   localStorage.removeItem("tapcoin_data");
-  data={...defaults};
+  data={...defaults,deposits:[]};
   save();
  }
+}
+
+/* DEPOSIT SYSTEM */
+
+function selectMethod(method){
+ selectedMethod=method;
+ selectedChannel=method;
+ document.getElementById("nagadBtn").classList.toggle("selected",method==="NAGAD");
+ document.getElementById("bkashBtn").classList.toggle("selected",method==="bKash");
+ document.querySelectorAll(".channels button").forEach(b=>{
+  b.classList.toggle("selected",b.textContent.trim()===method);
+ });
+}
+
+function selectChannel(channel,btn){
+ selectedChannel=channel;
+ document.querySelectorAll(".channels button").forEach(b=>b.classList.remove("selected"));
+ btn.classList.add("selected");
+}
+
+function submitDeposit(){
+ let amount=Number(document.getElementById("amount").value);
+ let trx=document.getElementById("trx").value.trim();
+
+ if(!amount||amount<500||amount>50000){
+  return alert("Amount must be between 500 and 50000 taka!");
+ }
+ if(!trx||trx.length<5){
+  return alert("Enter a valid Transaction ID!");
+ }
+
+ let duplicate=data.deposits.some(d=>d.trx.toLowerCase()===trx.toLowerCase());
+ if(duplicate)return alert("This Transaction ID was already submitted!");
+
+ let request={
+  id:Date.now(),
+  method:selectedMethod,
+  channel:selectedChannel,
+  amount:amount,
+  trx:trx,
+  status:"PENDING",
+  date:new Date().toLocaleString()
+ };
+
+ data.deposits.unshift(request);
+ save();
+
+ document.getElementById("amount").value="";
+ document.getElementById("trx").value="";
+
+ alert("Deposit request submitted! Status: PENDING");
+}
+
+function renderHistory(){
+ let box=document.getElementById("history");
+ if(!data.deposits.length){
+  box.innerHTML='<p class="small">No deposit history</p>';
+  return;
+ }
+
+ box.innerHTML="";
+ data.deposits.forEach(d=>{
+  let item=document.createElement("div");
+  item.className="history";
+
+  let title=document.createElement("b");
+  title.textContent=d.method+" - "+d.channel;
+
+  let amount=document.createElement("p");
+  amount.textContent="Amount: ৳"+d.amount;
+
+  let trx=document.createElement("p");
+  trx.textContent="Transaction ID: "+d.trx;
+
+  let status=document.createElement("p");
+  status.className="pending";
+  status.textContent="Status: "+d.status;
+
+  let date=document.createElement("small");
+  date.textContent=d.date;
+
+  item.append(title,amount,trx,status,date);
+  box.appendChild(item);
+ });
 }
 
 render();
