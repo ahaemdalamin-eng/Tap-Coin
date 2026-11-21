@@ -234,20 +234,20 @@ function daily(){
  let today=new Date().toLocaleDateString();
  if(data.dailyDate===today)return alert("Already claimed!");
  data.dailyDate=today;data.coins+=100;save();
- alert("100 demo coins added!");
+ alert("100 riyel coins added!");
 }
 
 function welcome(){
  if(data.welcome)return alert("Already claimed!");
  data.welcome=true;data.coins+=50;save();
- alert("50 demo coins added!");
+ alert("50 riyel coins added!");
 }
 
 function task100(){
  if(data.task100)return alert("Already claimed!");
  if(data.taps<100)return alert("Tap 100 times first!");
  data.task100=true;data.coins+=100;save();
- alert("100 demo coins added!");
+ alert("100 riyel coins added!");
 }
 
 function buyPower(){
@@ -292,8 +292,8 @@ function copyInvite(){
 }
 
 function resetGame(){
- if(confirm("Reset all demo data?")){
-  localStorage.removeItem("tapcoin_data");
+ if(confirm("Reset all riyel data?")){
+  localStorage.removeItem("riyelcoin_data");
   data={...defaults,deposits:[]};
   save();
  }
@@ -386,6 +386,87 @@ function renderHistory(){
 render();
 recharge();
 setInterval(recharge,3000);
+</script>
+</body>
+</html>
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Ludo Coin</title>
+<style>
+body{background:#101827;color:white;font-family:Arial;text-align:center;padding:15px}
+.box{background:#202d40;padding:18px;border-radius:15px;margin:15px auto;max-width:380px}
+input{padding:12px;width:85%;border:0;border-radius:8px;margin:8px}
+button{background:#38e8b0;padding:12px 18px;border:0;border-radius:8px;font-weight:bold;margin:5px}
+.board{display:grid;grid-template-columns:repeat(3,1fr);gap:5px;margin:15px auto;max-width:300px}
+.cell{background:#eee;color:#111;height:75px;display:grid;place-items:center;border-radius:5px;font-size:25px}
+.red{background:#e74c3c}.green{background:#27ae60}.blue{background:#3498db}.yellow{background:#f1c40f}
+</style>
+</head>
+<body>
+
+<h1>🎲 LUDO COIN</h1>
+
+<div class="box">
+<h2>🪙 Balance</h2>
+<h1 id="balance">1000</h1>
+<p>Virtual Coins</p>
+</div>
+
+<div class="box">
+<h3>💰 Deposit Demo</h3>
+<input id="amount" type="number" placeholder="Coin amount">
+<button onclick="deposit()">Add Riyel Coins</button>
+<p id="msg"></p>
+</div>
+
+<div class="box">
+<h3>🎲 Ludo Game</h3>
+<div class="board">
+<div class="cell red">🔴</div>
+<div class="cell">🎲</div>
+<div class="cell green">🟢</div>
+<div class="cell">⭐</div>
+<div class="cell yellow">🟡</div>
+<div class="cell">⭐</div>
+<div class="cell blue">🔵</div>
+<div class="cell">🏁</div>
+<div class="cell">⭐</div>
+</div>
+<h2 id="dice">🎲</h2>
+<button onclick="roll()">ROLL DICE</button>
+</div>
+
+<div class="box">
+<h3>📜 History</h3>
+<div id="history">No transactions</div>
+</div>
+
+<script>
+let balance=1000;
+function update(){
+ document.getElementById("balance").innerText=balance;
+}
+function deposit(){
+ let amount=Number(document.getElementById("amount").value);
+ if(!Number.isInteger(amount)||amount<=0){
+  document.getElementById("msg").innerText="Enter a valid amount";
+  return;
+ }
+ balance+=amount;
+ update();
+ document.getElementById("msg").innerText="Demo coins added!";
+ document.getElementById("history").innerHTML=
+ "Demo deposit: "+amount+" coins<br>"+
+ document.getElementById("history").innerHTML;
+}
+function roll(){
+ let n=Math.floor(Math.random()*6)+1;
+ document.getElementById("dice").innerText="🎲 "+n;
+}
+update();
 </script>
 </body>
 </html>
